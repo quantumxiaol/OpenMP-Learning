@@ -17,8 +17,13 @@ Visual Studio中在配置属性 - C/C++ - OpenMP支持 - 是
 OpenMP 使用特殊的编译指令来控制并行行为。常见的指令包括：
 
 #pragma omp parallel: 开始一个新的并行区域。
+
 #pragma omp parallel for: 并行执行循环。
+
 #pragma omp single: 执行单个线程的任务。
+
 #pragma omp critical: 保护临界区。
+
 #pragma omp barrier: 所有线程到达屏障点后继续执行。
+
 #pragma omp task: 创建一个新任务。
