@@ -156,3 +156,9 @@ Saved 37150 data points to result-ripple3.pcd
 Time taken: 38.0032 s
 
 可以看出使用多线程可以提高效率。
+
+![涟漪侧视图](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%B6%9F%E6%BC%AA1.png)
+
+![涟漪](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%B6%9F%E6%BC%AA2.png)
+
+![涟漪检测结果](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%B6%9F%E6%BC%AA3.png)
