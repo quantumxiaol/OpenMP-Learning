@@ -33,9 +33,11 @@ std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} }
 
 在for循环前添加#pragma omp parallel for schedule(static)即可。在并行化开始时就将迭代均匀地分配给各个线程。
 
+使用两个卷积核处理后得到上下边缘和左右边缘，再叠加即可。
+
 检测结果
 
-[!ayabe](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%A3%80%E6%B5%8B%E7%BB%93%E6%9E%9C.png)
+![ayabe](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%A3%80%E6%B5%8B%E7%BB%93%E6%9E%9C.png)
 
 数据显示开OMP要节省近一半的时间。
 
