@@ -35,6 +35,8 @@ std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} }
 
 检测结果
 
+[!ayabe](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%A3%80%E6%B5%8B%E7%BB%93%E6%9E%9C.png)
+
 数据显示开OMP要节省近一半的时间。
 
 为这碟醋包了这顿饺子。（指阿雅贝）
