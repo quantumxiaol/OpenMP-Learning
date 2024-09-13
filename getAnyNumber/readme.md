@@ -96,13 +96,28 @@
 
 ### 运行结果
 
-1 3 5 7 9 11
+1 3 5 7 9 11 13
+
 y=-1+2x
+
+![result1](./png/gAN1.png)
+
+1 5 9 114514
+
+-1+-38171x+57250.5x^2+-19083.5x^3
+
+![result1](./png/gAN5.png)
+
+在geogebra中绘制图像
+
+![result1](./png/gAN4.png)
 
 1 3 5 7 9 11 114514
 
-此时double丢失一些数据 
+![result1](./png/gAN2.png)
 
+![result1](./png/gAN3.png)
+此时double丢失一些数据 
 
 ## python 
 NumPy也可以直接计算多项式
