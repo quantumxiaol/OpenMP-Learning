@@ -36,3 +36,6 @@ OpenMP 使用特殊的编译指令来控制并行行为。常见的指令包括�
 - [边缘提取](edgeDetect/readme.md)  卷积核提取边缘
 - [蒙特卡罗方法](MonteCarlo/readme.md)  估计圆周率
 - [多项式乘法](polynomialMultiplication/readme.md)
+- [矩阵乘法](matrixMultiplication/readme.md)
+- [数字找规律](getAnyNumber/readme.md)  这个数字一定是114514，或者是1919810
+- [质数筛选](primeNumber/readme.md)
