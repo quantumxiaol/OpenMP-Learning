@@ -82,6 +82,6 @@
 
 效果
 
-![BF](htps://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt1.jpg)
+![BF](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt1.jpg)
 
-![AF](htps://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt2.jpg)
+![AF](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt2.jpg)
