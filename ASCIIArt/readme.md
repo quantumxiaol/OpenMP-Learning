@@ -79,3 +79,9 @@
     // 释放资源
     cap.release();
     writer.release();
+
+效果
+
+![BF](htps://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt1.jpg)
+
+![AF](htps://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt2.jpg)
