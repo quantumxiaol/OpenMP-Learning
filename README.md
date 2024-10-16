@@ -38,4 +38,5 @@ OpenMP 使用特殊的编译指令来控制并行行为。常见的指令包括�
 - [多项式乘法](polynomialMultiplication/readme.md)
 - [矩阵乘法](matrixMultiplication/readme.md)
 - [数字找规律](getAnyNumber/readme.md)  这个数字一定是114514，或者是1919810
-- [质数筛选](primeNumber/readme.md)
+- [质数筛选](primeNumber/readme.md)  给出1到n中的所有质数
+- [字符画](ASCIIArt/readme.md)  把图片/视频转为字符画
