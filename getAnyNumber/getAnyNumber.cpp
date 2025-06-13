@@ -1,4 +1,4 @@
-//getAnyNumber.cpp : ÕÒ¹æÂÉ»ñµÃÈÎÒâÊı×ÖµÄ¶àÏîÊ½
+//getAnyNumber.cpp : æ‹Ÿåˆæ›²çº¿
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -18,9 +18,9 @@
 #include <random>
 #include <omp.h>
 #include <chrono>
+#include <cstdlib>
 
-
-// ¿ìËÙ¸µÀïÒ¶±ä»»
+// å¿«é€Ÿå‚…é‡Œå¶å˜æ¢
 void fft(std::vector<std::complex<double>>& x, bool invert) {
     int N = x.size();
 
@@ -54,7 +54,7 @@ void fft(std::vector<std::complex<double>>& x, bool invert) {
     }
 }
 
-// ¶àÏîÊ½³Ë·¨
+// å¤šé¡¹å¼ä¹˜æ³•
 void polynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     int n = 1;
     while (n < A.size() + B.size()) {
@@ -84,7 +84,7 @@ void polynomialMultiplication(const std::vector<double>& A, const std::vector<do
     }
 }
 
-// ½áºÏ OpenMP ºÍ FFT ÓÅ»¯µÄ¶àÏîÊ½³Ë·¨
+// ç»“åˆ OpenMP å’Œ FFT ä¼˜åŒ–çš„å¤šé¡¹å¼ä¹˜æ³•
 void openmpPolynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     int n = 1;
     while (n < A.size() + B.size()) {
@@ -118,33 +118,58 @@ void openmpPolynomialMultiplication(const std::vector<double>& A, const std::vec
     }
 }
 
-// ´òÓ¡¶àÏîÊ½µÄÇ°lenÏî
+// æ‰“å°å¤šé¡¹å¼çš„å‰lené¡¹
 void PrintV(const std::vector<double>& A, int len) {
-    // ±éÀú¶àÏîÊ½µÄÇ°lenÏî
-    for (int i = 0; i < len && i < A.size(); ++i) {
-        // Èç¹ûÏµÊı²»Îª0£¬Ôò´òÓ¡¸ÃÏî
-        if (A[i] != 0) {
-            if (i > 0) std::cout << "+"; // ³ıÁËµÚÒ»ÏîÍâ£¬ÆäÓàÏîÇ°Ãæ¶¼¼Ó'+'ºÅ
-            if (A[i] != 1 || i == 0) std::cout << A[i]; // Èç¹ûÏµÊı²»ÊÇ1»òÕßµ±Ç°ÏîÊÇ³£ÊıÏî£¬Ôò´òÓ¡ÏµÊı
-            if (i == 1) std::cout << "x"; // µ±Ç°ÏîÊÇÒ»´ÎÏî
-            else if (i > 1) std::cout << "x^" << i; // µ±Ç°ÏîÊÇ¸ßÓÚÒ»´ÎµÄÏî
+    bool first = true;
+    for (int i = 0; i <= len; ++i) { // ä»å¸¸æ•°é¡¹å¼€å§‹ï¼Œé€æ­¥æ‰“å°åˆ°æœ€é«˜æ¬¡é¡¹
+        double coef = A[i];
+        if (coef == 0) continue; // è·³è¿‡é›¶é¡¹
+        double abs_coef = std::abs(coef);
+
+        if (!first) {
+            if (coef > 0) std::cout << " + ";
+            else std::cout << " - ";
+        } else if (coef < 0) {
+            std::cout << "-"; // ç¬¬ä¸€ä¸ªéé›¶é¡¹æ˜¯è´Ÿæ•°æ—¶åŠ è´Ÿå·
         }
+
+        // æ‰“å°ç³»æ•°éƒ¨åˆ†ï¼ˆæ³¨æ„ï¼šç³»æ•°ä¸º Â±1 æ—¶ç‰¹æ®Šå¤„ç†ï¼‰
+        if (abs_coef != 1 || i == 0) { // å¸¸æ•°é¡¹å³ä½¿ä¸º1ä¹Ÿè¦æ˜¾ç¤º
+            // std::cout<<i;
+            std::cout << abs_coef;
+        }
+
+
+        // æ‰“å°å˜é‡éƒ¨åˆ†
+        if (i > 0) {
+            std::cout << "x";
+            if (i > 1) {
+                std::cout << "^" << i;
+            }
+        }
+
+        first = false;
     }
+
+    if (first) {
+        std::cout << "0"; // æ‰€æœ‰ç³»æ•°éƒ½ä¸º0çš„æƒ…å†µ
+    }
+
     std::cout << std::endl;
 }
 
 
 
 
-// ¼ÆËã¶àÏîÊ½µÄÏµÊı
+// è®¡ç®—å¤šé¡¹å¼çš„ç³»æ•°
 std::vector<double> CalculateCoefficients(const std::vector<double>& An, double target) {
     int n = An.size();
 
 
-    // ³õÊ¼»¯ÏµÊıÏòÁ¿
+    // åˆå§‹åŒ–ç³»æ•°å‘é‡
     std::vector<double> ConsOri(n+1, 0);
 
-    // ¼ÆËãÃ¿¸öÏµÊı
+    // è®¡ç®—æ¯ä¸ªç³»æ•°
     for (int i = 0; i < n+1; ++i) {
         double product = 1;
         for (int j = 0; j < n+1; ++j) {
@@ -157,7 +182,7 @@ std::vector<double> CalculateCoefficients(const std::vector<double>& An, double 
         else ConsOri[i] = target/product;
     }
 
-    // Õ¹¿ª¶àÏîÊ½²¢»¯¼ò
+    // å±•å¼€å¤šé¡¹å¼å¹¶åŒ–ç®€
     std::vector<double> ans(n + 1, 0);
 
     for (int i = 0; i < n+1; ++i) {
@@ -182,7 +207,7 @@ std::vector<double> CalculateCoefficients(const std::vector<double>& An, double 
 
     }
     for (int k = 0; k <= n; ++k) {
-        //ÒòÎªdouble¾«¶ÈÎÊÌâ£¬Ò»Ğ©ÖµĞèÒª±»ÊÓÎª0
+        //å› ä¸ºdoubleç²¾åº¦é—®é¢˜ï¼Œä¸€äº›å€¼éœ€è¦è¢«è§†ä¸º0
         if (abs(ans[k]) < 1e-6) ans[k] = 0;
 
     }
@@ -191,30 +216,38 @@ std::vector<double> CalculateCoefficients(const std::vector<double>& An, double 
     return ans;
 }
 
-int main() {
-    // Ê¾ÀıÊı¾İ
-    std::vector<double> An = { 1,5,9}; // ÒÑÖªĞòÁĞ
-    double target = 114514; // Ä¿±êÖµ t
-
-    //Êä³öÒÑÖªĞòÁĞ
-    std::cout << "ÒÑÖªĞòÁĞÎª: " << std::endl;
+int main(int argc, char* argv[]) {
+    std::vector<double> An ; // å·²çŸ¥åºåˆ—
+    double target = 114514; // ç›®æ ‡å€¼ t
+    if (argc > 1) {
+        // å¦‚æœæœ‰å‘½ä»¤è¡Œå‚æ•°
+        for (int i = 1; i < argc - 1; ++i) {
+            An.push_back(std::atof(argv[i])); // å°†å‰ n-1 ä¸ªå‚æ•°ä½œä¸º An
+        }
+        target = std::atof(argv[argc - 1]); // æœ€åä¸€ä¸ªå‚æ•°ä¸º target
+    } else {
+        // æ²¡æœ‰å‚æ•°æ—¶ä½¿ç”¨é»˜è®¤å€¼
+        An = {1, 5, 9, 15, 25};
+    }
+    //è¾“å‡ºå·²çŸ¥åºåˆ—
+    std::cout << "å·²çŸ¥åºåˆ—ä¸º: " << std::endl;
     for(int i = 0; i < An.size(); i++){
 		std::cout << An[i] << " ";
 	}
-    std::cout << std::endl << "Ä¿±êÎª: " <<target  <<std::endl;
+    std::cout << std::endl << "ç›®æ ‡ä¸º: " <<target  <<std::endl;
 
 
-    // ¼ÆËã¶àÏîÊ½µÄÏµÊı
+    // è®¡ç®—å¤šé¡¹å¼çš„ç³»æ•°
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<double> ans = CalculateCoefficients(An, target);
     auto end = std::chrono::high_resolution_clock::now();
 
-    // Êä³ö¶àÏîÊ½ÏµÊı
-    std::cout << "¶àÏîÊ½ÏµÊıÎª: " << std::endl;
-    PrintV(ans, ans.size()); // Êä³öËùÓĞÏî
+    // è¾“å‡ºå¤šé¡¹å¼ç³»æ•°
+    std::cout << "å¤šé¡¹å¼ç³»æ•°ä¸º: " << std::endl;
+    PrintV(ans, ans.size()); // è¾“å‡ºæ‰€æœ‰é¡¹
 
-    // Êä³ö¼ÆËãÊ±¼ä
-    std::cout << "¼ÆËãÊ±¼ä: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    // è¾“å‡ºè®¡ç®—æ—¶é—´
+    std::cout << "è®¡ç®—æ—¶é—´: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
 
     return 0;
 }
