@@ -46,6 +46,23 @@
     Time for parallel: 84ms
     Time for parallel v2: 79ms
 
+    (使用clang++ 编译 -O2 -fopenmp )
+    ./output/cubicSum                                                                                  
+    Serial sum: 2.025e+33
+    Parallel sum: 2.025e+33
+    Parallel sum v2: 2.025e+33
+    Time for serial: 646ms
+    Time for parallel: 27ms
+    Time for parallel v2: 27ms
+
+    (使用Cmake 编译 -O2 -fopenmp )
+    Serial sum: 2.025e+33
+    Parallel sum: 2.025e+33
+    Parallel sum v2: 2.025e+33
+    Time for serial: 485ms
+    Time for parallel: 29ms
+    Time for parallel v2: 27ms
+
 在Ubuntu22.04(Intel i7-10875)上的运行结果
 
     ./output/cubicSum
@@ -58,3 +75,5 @@
 
 在 cubicSum_MTv2 中手动划分线程任务，并通过 #pragma omp atomic 来更新全局变量 sum，这种方式效率低且容易引入浮点误差或竞争条件。
 在Macos M4上，造成锁竞争。
+
+修改set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2 -fopenmp ${OpenMP_CXX_FLAGS}")后运行结果正常

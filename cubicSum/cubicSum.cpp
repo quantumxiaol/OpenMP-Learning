@@ -2,7 +2,7 @@
 // Ubuntu 
 //  g++ -o output/cubicSum cubicSum/cubicSum.cpp -fopenmp -std=c++17 
 // MacOs
-//  /opt/homebrew/opt/llvm/bin/clang++ -o output/cubicSum cubicSum/cubicSum.cpp -fopenmp -std=c++17
+//  /opt/homebrew/opt/llvm/bin/clang++ -o output/cubicSum cubicSum/cubicSum.cpp -O2 -fopenmp -std=c++17
 
 #include <iostream>
 #include <omp.h>
