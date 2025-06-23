@@ -1,4 +1,4 @@
-#计算数组中所有元素的立方和
+# 计算数组中所有元素的立方和
 
 计算立方和只需要
 
@@ -24,3 +24,14 @@ cubicSum_MTv2使用 OpenMP 的并行区域来计算数组中所有元素的立�
 并行开销: 创建和销毁线程、数据分割、上下文切换等都会带来开销。
 
 并行计算特性: 如果任务粒度过小，开销可能会超过并行带来的好处；如果硬件不足以支持所需的线程数量，性能提升可能不明显。
+
+## 运行结果
+
+在MacOS(M4)上的运行结果
+
+    Serial sum: 2.025e+33
+    Parallel sum: 2.025e+33
+    Parallel sum v2: 2.025e+34
+    Time for serial: 876ms
+    Time for parallel: 86ms
+    Time for parallel v2: 691ms
