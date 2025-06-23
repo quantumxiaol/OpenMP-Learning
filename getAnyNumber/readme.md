@@ -100,23 +100,23 @@
 
 y=-1+2x
 
-![result1](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/gAN1.png)
+![result1](../png/gAN1.png)
 
 1 5 9 114514
 
 -1+-38171x+57250.5x^2+-19083.5x^3
 
-![result1](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/gAN5.png)
+![result1](../png/gAN5.png)
 
 在geogebra中绘制图像
 
-![result1](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/gAN4.png)
+![result1](../png/gAN4.png)
 
 1 3 5 7 9 11 114514
 
-![result1](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/gAN2.png)
+![result1](../png/gAN2.png)
 
-![result1](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/gAN3.png)
+![result1](../png/gAN3.png)
 此时double丢失一些数据 
 
 ## python 
@@ -169,17 +169,40 @@ NumPy也可以直接计算多项式
       
 计算时间: 0.9982585906982422 ms
 
-./output/getAnyNumber_cuda
-已知序列为: 1 5 9 15 25 
-目标为: 114514
-多项式系数为:
--1 - 22899.3x + 47698.1x^2 - 33388.3x^3 + 9539.42x^4 - 953.942x^5
-计算时间: 213ms
+## 结果对比
 
-./output/getAnyNumber
-已知序列为: 
-1 5 9 15 25 
-目标为: 114514
-多项式系数为: 
--22899.3x + 47698.1x^2 - 33388.3x^3 + 9539.42x^4 - 953.942x^5
-计算时间: 323ms
+    Ubuntu22.04(Intel i7-10875，RTX 2060Laptop，CUDA11.7)
+    ./output/getAnyNumber_cuda
+    已知序列为: 1 5 9 15 25 
+    目标为: 114514
+    多项式系数为:
+    -1 - 22899.3x + 47698.1x^2 - 33388.3x^3 + 9539.42x^4 - 953.942x^5
+    计算时间: 213ms
+
+    Ubuntu
+    ./output/getAnyNumber
+    已知序列为: 
+    1 5 9 15 25 
+    目标为: 114514
+    多项式系数为: 
+    -22899.3x + 47698.1x^2 - 33388.3x^3 + 9539.42x^4 - 953.942x^5
+    计算时间: 323ms
+
+    MacOS(M4)
+    ./output/getAnyNumber
+    已知序列为: 
+    1 5 9 15 25 
+    目标为: 114514
+    多项式系数为: 
+    -1 - 22899.3x + 47698.1x^2 - 33388.3x^3 + 9539.42x^4 - 953.942x^5
+    计算时间: 10ms
+
+    python getAnyNumber/getAnyNumber.py
+    已知序列为: [1, 5, 9, 15, 25]
+    目标为: 114514
+    多项式为:
+    -1.0 - 22899.26666667·x + 47698.08333333·x² - 33388.29166667·x³ +
+    9539.41666667·x⁴ - 953.94166667·x⁵
+    计算时间: 0.38504600524902344 ms
+
+这mac怎么这么快。

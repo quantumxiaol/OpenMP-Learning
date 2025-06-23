@@ -41,7 +41,7 @@ def calculate_coefficients(an, target):
 
 if __name__ == "__main__":
     # 示例数据
-    an = [1, 5, 9]  # 已知序列
+    an = [1, 5, 9, 15, 25]  # 已知序列
     target = 114514  # 目标值 t
 
     print("已知序列为:", an)
