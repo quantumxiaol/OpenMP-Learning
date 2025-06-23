@@ -108,6 +108,7 @@ llvm提供了 C、C++ 和 Objective-C 的编译器。libomp则可以让C++程序
         "/opt/homebrew/opt/libomp/include", // libomp 头文件路径
         "/opt/homebrew/opt/llvm/include", // 如果用的是 Homebrew 安装的 LLVM 版本
         "/opt/homebrew/opt/opencv/include",
+        "/opt/homebrew/include/eigen3",
         "/opt/homebrew/opt/pcl/include",
         "/opt/homebrew/include/opencv4",
         "/opt/homebrew/include/pcl-1.15"
