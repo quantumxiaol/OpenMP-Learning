@@ -1,4 +1,8 @@
 // MonteCarlo.cpp：蒙特卡洛方法
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ -o output/MonteCarlo MonteCarlo/MonteCarlo.cpp -O2 -fopenmp -std=c++17
 #include <iostream>
 #include <random>
 #include <omp.h>
@@ -66,8 +70,27 @@ double parallelMonteCarloPi(long numSamples) {
     return 4.0 * totalInside / numSamples;
 }
 
-int main() {
-    const long numSamples = 10000000000; // 可以调整样本数量来提高精度
+int main(int argc, char *argv[]) {
+    const long defaultNumSamples = 100;
+    long numSamples;
+
+    if (argc > 1) {
+        // 如果提供了命令行参数，则尝试将其转换为长整型
+        try {
+            numSamples = std::stol(argv[1]);
+        } catch (const std::invalid_argument& ia) {
+            std::cerr << "Invalid argument. Using default value: " << defaultNumSamples << std::endl;
+            numSamples = defaultNumSamples;
+        } catch (const std::out_of_range& oor) {
+            std::cerr << "Argument out of range. Using default value: " << defaultNumSamples << std::endl;
+            numSamples = defaultNumSamples;
+        }
+    } else {
+        // 如果没有提供参数，则使用默认值
+        numSamples = defaultNumSamples;
+    }
+
+    std::cout << "Number of samples set to: " << numSamples << std::endl;
 
     // 不使用 OpenMP 的情况
     auto start = std::chrono::high_resolution_clock::now();
