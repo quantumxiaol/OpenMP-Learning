@@ -4,9 +4,9 @@
 
 定义两个3x3的卷积核 kernelX 和 kernelY，分别用于计算水平和垂直方向上的梯度。
 
-std::vector<std::vector<float>> kernelXV= { {1, 1, 1}, {0, 0, 0}, {-1, -1, -1} };
+    std::vector<std::vector<float>> kernelXV= { {1, 1, 1}, {0, 0, 0}, {-1, -1, -1} };
 
-std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} };
+    std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} };
 
 一个提取水平方向的边缘，一个提取竖直方向的边缘。在边缘处，梯度变化是最大的。
 
@@ -35,10 +35,43 @@ std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} }
 
 使用两个卷积核处理后得到上下边缘和左右边缘，再叠加即可。
 
-检测结果
+## 检测结果
 
-![ayabe](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/%E6%A3%80%E6%B5%8B%E7%BB%93%E6%9E%9C.png)
+![ayabe](../png/edgeDetectResultonWin.png)
 
-数据显示开OMP要节省近一半的时间。
+![ayabe](../png/edgeDetectResultonMac.png)
 
 为这碟醋包了这顿饺子。（指阿雅贝）
+
+## 运行结果
+
+在Windows10(Intel i7-10875H)上运行结果
+
+    Standard edge detection took 10823 microseconds.
+    OpenMP edge detection took 6320 microseconds.
+数据显示开OMP要节省近一半的时间。
+
+在MacOS(M4)上运行结果
+
+    ./output/edgeDetect
+    Standard edge detection took 69029 microseconds.
+    OpenMP edge detection took 18570 microseconds.
+
+    # 开启O2优化
+    Standard edge detection took 5308 microseconds.
+    OpenMP edge detection took 6556 microseconds.
+
+
+M4 芯片拥有强大的多核调度能力和内存带宽，在以下条件下表现出色：
+
+没有启用 -O2 优化 → 编译器不做复杂重排和向量化，
+使用 OpenMP 的 parallel for → 线程分配均匀，负载均衡好，
+数据局部性较好（图像卷积操作具有局部访问特性）。
+所以在默认情况下，OpenMP 并行化能带来显著加速。
+
+为什么在开启 -O2 后，串行版本速度暴增，而 OpenMP 反而变慢？
+串行版本变快是正常的，-O2 开启后，循环被展开、寄存器使用更高效、指令级并行提高。
+尤其是对 for 循环中的浮点运算进行了自动向量化（SIMD），导致单线程性能大幅提升。
+
+OpenMP 版本变慢则可能是线程创建/销毁开销大于收益。在 -O2 下串行代码已经非常快，OpenMP 的线程管理成本（如 fork/join）可能反而拖慢整体执行。
+OpenMP 默认会创建与逻辑核心数相等的线程数，这在小规模任务中并不划算。

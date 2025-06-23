@@ -1,4 +1,12 @@
 // conv.cpp : 卷积操作。
+//
+//
+// MacOS
+//  /opt/homebrew/opt/llvm/bin/clang++ \
+  -std=c++17 -fopenmp \
+  edgeDetect/conv.cpp -o output/edgeDetect \
+  $(pkg-config --cflags --libs opencv4 pcl_common pcl_io pcl_kdtree pcl_search)
+
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -88,7 +96,8 @@ void edgeDetectionOMP(const cv::Mat& src, cv::Mat& dst) {
 
 
 int main() {
-    std::string path = "C:\\work\\testData\\Ayabe.png";
+    // wget -O tsetData/Ayabe.png https://img.moegirl.org.cn/common/2/2d/UPDCH_AdmireVega_02.png
+    std::string path = "./testData/Ayabe.png";
 
     cv::Mat src = cv::imread(path, cv::IMREAD_GRAYSCALE);
     if (!src.data) {
