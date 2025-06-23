@@ -11,7 +11,7 @@
 Main：使用本地时间作为种子初始化随机数生成器,为每个线程创建独立的随机数生成器,为每个生成器设置不同的种子。
 
 
-# 归并排序原理
+## 归并排序原理
 
 归并排序是一种分治算法，它通过递归地将数组分成两半，直到每个子数组只包含一个元素，然后再将这些子数组合并成有序数组。
 
@@ -47,7 +47,7 @@ Main：使用本地时间作为种子初始化随机数生成器,为每个线程
 可以采用插入排序排序较短数组。
 
 
-# 多线程归并排序原理
+## 多线程归并排序原理
 
 多线程归并排序是在归并排序的基础上增加了多线程的支持，以提高排序效率。主要思路是利用多核处理器的优势，通过并行地处理数组的不同部分来加速排序过程。
 
@@ -64,7 +64,7 @@ Main：使用本地时间作为种子初始化随机数生成器,为每个线程
 最终，使用 merge 函数将两个有序的子数组合并成一个有序数组。
 
 
-# std::sort 原理
+## std::sort 原理
 
 std::sort 是 C++ 标准库中的一个通用排序函数，它提供了一种高效的方式来排序容器中的元素。std::sort 实际上是基于快速排序算法的变种，称为 Introsort 或 Introselect，这是一种混合排序算法，它结合了快速排序、堆排序和插入排序的优点。
 
@@ -79,3 +79,19 @@ Introsort 的主要步骤如下：
 插入排序：对于小数组，使用插入排序进行优化，因为它在小数组上通常比快速排序和堆排序更快。
 
 使用chrono对比不同版本的运行时间。
+
+## 运行结果
+
+在Windows10(Intel i7-10875)上的运行结果
+
+    Time for non-parallel merge sort: 2036ms
+    Time for non-parallel merge sort with insertion sort: 2097ms
+    Time for parallel merge sort: 715ms
+    Time for std::sort: 606ms
+
+在MacOS(M4)上的运行结果(-O2 -fopenmp)
+
+    Time for non-parallel merge sort: 1007ms
+    Time for non-parallel merge sort with insertion sort: 1015ms
+    Time for parallel merge sort: 378ms
+    Time for std::sort: 356ms

@@ -1,4 +1,8 @@
 // mergeSort.cpp : 归并排序。
+// 
+// 
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ -o output/mergeSort mergeSort/mergeSort.cpp -O2 -fopenmp -std=c++17
 
 #include <iostream>
 #include <omp.h>
