@@ -1,5 +1,8 @@
 ﻿// cubicSum.cpp : 立方之和。
-//
+// Ubuntu 
+//  g++ -o output/cubicSum cubicSum/cubicSum.cpp -fopenmp -std=c++17 
+// MacOs
+//  /opt/homebrew/opt/llvm/bin/clang++ -o output/cubicSum cubicSum/cubicSum.cpp -fopenmp -std=c++17
 
 #include <iostream>
 #include <omp.h>
