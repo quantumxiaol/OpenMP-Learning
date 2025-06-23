@@ -1,11 +1,11 @@
-// MonteCarlo.cpp£ºÃÉÌØ¿¨Âå·½·¨
+// MonteCarlo.cppï¼šè’™ç‰¹å¡æ´›æ–¹æ³•
 #include <iostream>
 #include <random>
 #include <omp.h>
 #include <chrono>
 #include <vector>
 
-// ¼ÆËãPIµÄº¯Êı
+// è®¡ç®—PIçš„å‡½æ•°
 double monteCarloPi(long numSamples) {
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(-1.0, 1.0);
@@ -22,28 +22,28 @@ double monteCarloPi(long numSamples) {
     return 4.0 * inside / numSamples;
 }
 
-// ¶¨ÒåÒ»¸öÔ­×Ó¼Ó·¨º¯Êı
-//Ò²¿ÉÒÔÖ±½ÓÊ¹ÓÃ std::atomic<long> ÀàĞÍÀ´Ìæ´ú long
+// å®šä¹‰ä¸€ä¸ªåŸå­åŠ æ³•å‡½æ•°
+//ä¹Ÿå¯ä»¥ç›´æ¥ä½¿ç”¨ std::atomic<long> ç±»å‹æ¥æ›¿ä»£ long
 void atomic_add(volatile long* target, long value) {
 #pragma omp atomic
     * target += value;
 }
 
-// Ê¹ÓÃ OpenMP ²¢ĞĞ»¯µÄÃÉÌØ¿¨Âå·½·¨¼ÆËã ¦Ğ
+// ä½¿ç”¨ OpenMP å¹¶è¡ŒåŒ–çš„è’™ç‰¹å¡æ´›æ–¹æ³•è®¡ç®— Ï€
 double parallelMonteCarloPi(long numSamples) {
     std::atomic<long> totalInside(0);
 
 #pragma omp parallel
     {
-        std::default_random_engine generator(omp_get_thread_num()); // Ê¹ÓÃ²»Í¬µÄÖÖ×Ó
+        std::default_random_engine generator(omp_get_thread_num()); // ä½¿ç”¨ä¸åŒçš„ç§å­
         std::uniform_real_distribution<double> distribution(-1.0, 1.0);
 
         long localInside = 0;
-        long chunkSize = numSamples / omp_get_num_threads(); // Ã¿¸öÏß³Ì´¦ÀíµÄÊı¾İÁ¿
+        long chunkSize = numSamples / omp_get_num_threads(); // æ¯ä¸ªçº¿ç¨‹å¤„ç†çš„æ•°æ®é‡
         long start = omp_get_thread_num() * chunkSize;
         long end = start + chunkSize;
 
-        // È·±£×îºóÒ»¸öÏß³Ì´¦ÀíËùÓĞÊ£ÓàµÄÊı¾İ
+        // ç¡®ä¿æœ€åä¸€ä¸ªçº¿ç¨‹å¤„ç†æ‰€æœ‰å‰©ä½™çš„æ•°æ®
         if (omp_get_thread_num() == omp_get_num_threads() - 1) {
             end = numSamples;
         }
@@ -56,7 +56,7 @@ double parallelMonteCarloPi(long numSamples) {
             }
         }
 
-        // ÔÚÍË³öÁÙ½çÇøÖ®Ç°¸üĞÂ totalInside
+        // åœ¨é€€å‡ºä¸´ç•ŒåŒºä¹‹å‰æ›´æ–° totalInside
 #pragma omp critical
         {
             totalInside += localInside;
@@ -67,16 +67,16 @@ double parallelMonteCarloPi(long numSamples) {
 }
 
 int main() {
-    const long numSamples = 10000000000; // ¿ÉÒÔµ÷ÕûÑù±¾ÊıÁ¿À´Ìá¸ß¾«¶È
+    const long numSamples = 10000000000; // å¯ä»¥è°ƒæ•´æ ·æœ¬æ•°é‡æ¥æé«˜ç²¾åº¦
 
-    // ²»Ê¹ÓÃ OpenMP µÄÇé¿ö
+    // ä¸ä½¿ç”¨ OpenMP çš„æƒ…å†µ
     auto start = std::chrono::high_resolution_clock::now();
     double pi = monteCarloPi(numSamples);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
     std::cout << "Non-parallel Monte Carlo Pi: " << pi << "\nTime taken: " << elapsed.count() << " seconds\n";
 
-    // Ê¹ÓÃ OpenMP µÄÇé¿ö
+    // ä½¿ç”¨ OpenMP çš„æƒ…å†µ
     start = std::chrono::high_resolution_clock::now();
     double parallelPi = parallelMonteCarloPi(numSamples);
     end = std::chrono::high_resolution_clock::now();

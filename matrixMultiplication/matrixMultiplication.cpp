@@ -1,10 +1,10 @@
-//matrixMultiplication.cpp£º¾ØÕó³Ë·¨
+//matrixMultiplication.cppï¼šçŸ©é˜µä¹˜æ³•
 
 #include <iostream>
 #include <vector>
 #include <omp.h>
 #include <chrono>
-#include <Eigen/Dense> // Eigen ÏßĞÔ´úÊı¿â
+#include <Eigen/Dense> // Eigen çº¿æ€§ä»£æ•°åº“
 #include <random>
 
 void matrixMultiplySerial(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
@@ -13,10 +13,10 @@ void matrixMultiplySerial(const std::vector<std::vector<double>>& A, const std::
     int rowsB = B.size();
     int colsB = B[0].size();
 
-    // ³õÊ¼»¯½á¹û¾ØÕó
+    // åˆå§‹åŒ–ç»“æœçŸ©é˜µ
     C.resize(rowsA, std::vector<double>(colsB, 0));
 
-    // ¾ØÕó³Ë·¨
+    // çŸ©é˜µä¹˜æ³•
     for (int i = 0; i < rowsA; ++i) {
         for (int j = 0; j < colsB; ++j) {
             for (int k = 0; k < colsA; ++k) {
@@ -32,10 +32,10 @@ void matrixMultiplyParallel(const std::vector<std::vector<double>>& A, const std
     int rowsB = B.size();
     int colsB = B[0].size();
 
-    // ³õÊ¼»¯½á¹û¾ØÕó
+    // åˆå§‹åŒ–ç»“æœçŸ©é˜µ
     C.resize(rowsA, std::vector<double>(colsB, 0));
 
-    // ²¢ĞĞ»¯¾ØÕó³Ë·¨
+    // å¹¶è¡ŒåŒ–çŸ©é˜µä¹˜æ³•
 #pragma omp parallel for schedule(static)
     for (int i = 0; i < rowsA; ++i) {
         for (int j = 0; j < colsB; ++j) {
@@ -51,23 +51,23 @@ void matrixMultiplyParallel(const std::vector<std::vector<double>>& A, const std
 void matrixMultiplyEigen(const Eigen::MatrixXd& A, const Eigen::MatrixXd& B, Eigen::MatrixXd& C) {
     C = A * B;
 }
-// ÓÅ»¯ºóµÄ²¢ĞĞ¾ØÕó³Ë·¨
+// ä¼˜åŒ–åçš„å¹¶è¡ŒçŸ©é˜µä¹˜æ³•
 void matrixMultiplyParallelOptimized(const std::vector<std::vector<double>>& A, const std::vector<std::vector<double>>& B, std::vector<std::vector<double>>& C) {
     int rowsA = A.size();
     int colsA = A[0].size();
     int rowsB = B.size();
     int colsB = B[0].size();
 
-    // ³õÊ¼»¯½á¹û¾ØÕó
+    // åˆå§‹åŒ–ç»“æœçŸ©é˜µ
     C.resize(rowsA, std::vector<double>(colsB, 0));
 
-    // ²¢ĞĞ»¯¾ØÕó³Ë·¨
+    // å¹¶è¡ŒåŒ–çŸ©é˜µä¹˜æ³•
 #pragma omp parallel for schedule(static)
     for (int i = 0; i < rowsA; ++i) {
         for (int j = 0; j < colsB; ++j) {
             double sum = 0.0;
-//simdÖ¸Ê¾±àÒëÆ÷³¢ÊÔ¶ÔÒ»¸öÑ­»·½øĞĞÏòÁ¿»¯Ö´ĞĞ£¬Õâ¶ÔÓÚÒ»Ğ©¼òµ¥µÄÑ­»·ÌØ±ğÓĞÓÃ
-//ËùÓĞµÄÏß³Ì¶Ô sum µÄ¹±Ï×»á±»¼ÓÔÚÒ»Æğ
+//simdæŒ‡ç¤ºç¼–è¯‘å™¨å°è¯•å¯¹ä¸€ä¸ªå¾ªç¯è¿›è¡Œå‘é‡åŒ–æ‰§è¡Œï¼Œè¿™å¯¹äºä¸€äº›ç®€å•çš„å¾ªç¯ç‰¹åˆ«æœ‰ç”¨
+//æ‰€æœ‰çš„çº¿ç¨‹å¯¹ sum çš„è´¡çŒ®ä¼šè¢«åŠ åœ¨ä¸€èµ·
 #pragma omp simd reduction(+:sum)
             for (int k = 0; k < colsA; ++k) {
                 sum += A[i][k] * B[k][j];
@@ -83,10 +83,10 @@ void blockMatrixMultiply(const std::vector<std::vector<double>>& A, const std::v
     int rowsB = B.size();
     int colsB = B[0].size();
 
-    // ³õÊ¼»¯½á¹û¾ØÕó
+    // åˆå§‹åŒ–ç»“æœçŸ©é˜µ
     C.resize(rowsA, std::vector<double>(colsB, 0));
 
-    // ²¢ĞĞ»¯¾ØÕó³Ë·¨
+    // å¹¶è¡ŒåŒ–çŸ©é˜µä¹˜æ³•
 #pragma omp parallel for collapse(2)
     for (int i = 0; i < rowsA; i += blockSize) {
         for (int j = 0; j < colsB; j += blockSize) {
@@ -106,12 +106,12 @@ void blockMatrixMultiply(const std::vector<std::vector<double>>& A, const std::v
 }
 
 int main() {
-    // ÉèÖÃ¾ØÕóµÄ´óĞ¡
-    int M = 100; // ĞĞÊı
-    int N = 100; // ÁĞÊı
-    int P = 100; // µÚ¶ş¸ö¾ØÕóµÄÁĞÊı
+    // è®¾ç½®çŸ©é˜µçš„å¤§å°
+    int M = 100; // è¡Œæ•°
+    int N = 100; // åˆ—æ•°
+    int P = 100; // ç¬¬äºŒä¸ªçŸ©é˜µçš„åˆ—æ•°
 
-    // Ëæ»úÉú³É¾ØÕó A ºÍ B
+    // éšæœºç”ŸæˆçŸ©é˜µ A å’Œ B
     std::vector<std::vector<double>> A(M, std::vector<double>(N, 0));
     std::vector<std::vector<double>> B(N, std::vector<double>(P, 0));
     std::vector<std::vector<double>> C_serial(M, std::vector<double>(P, 0));
@@ -125,7 +125,7 @@ int main() {
     std::default_random_engine engine;
     std::uniform_real_distribution<double> distribution(-10.0, 10.0);
 
-    // ³õÊ¼»¯¾ØÕó A ºÍ B
+    // åˆå§‹åŒ–çŸ©é˜µ A å’Œ B
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             A[i][j] = distribution(engine);
@@ -140,28 +140,28 @@ int main() {
         }
     }
 
-    // ´®ĞĞ¾ØÕó³Ë·¨
+    // ä¸²è¡ŒçŸ©é˜µä¹˜æ³•
     auto start = std::chrono::high_resolution_clock::now();
     matrixMultiplySerial(A, B, C_serial);
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Serial matrix multiplication took " << duration << " microseconds." << std::endl;
 
-    // ²¢ĞĞ¾ØÕó³Ë·¨
+    // å¹¶è¡ŒçŸ©é˜µä¹˜æ³•
     start = std::chrono::high_resolution_clock::now();
     matrixMultiplyParallelOptimized(A, B, C_parallel);
     end = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Parallel matrix multiplication took " << duration << " microseconds." << std::endl;
 
-    // ¿é¾ØÕó³Ë·¨
+    // å—çŸ©é˜µä¹˜æ³•
     start = std::chrono::high_resolution_clock::now();
-    blockMatrixMultiply(A, B, C_block, 64); // ¼ÙÉèÃ¿¸ö¿éµÄ´óĞ¡Îª 64x64
+    blockMatrixMultiply(A, B, C_block, 64); // å‡è®¾æ¯ä¸ªå—çš„å¤§å°ä¸º 64x64
     end = std::chrono::high_resolution_clock::now();
     duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Block matrix multiplication took " << duration << " microseconds." << std::endl;
 
-    // Ê¹ÓÃ Eigen ¿âµÄ¾ØÕó³Ë·¨
+    // ä½¿ç”¨ Eigen åº“çš„çŸ©é˜µä¹˜æ³•
     start = std::chrono::high_resolution_clock::now();
     matrixMultiplyEigen(A_eigen, B_eigen, C_eigen);
     end = std::chrono::high_resolution_clock::now();

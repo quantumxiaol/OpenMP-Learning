@@ -1,4 +1,4 @@
-// conv.cpp : ¾í»ı²Ù×÷¡£
+// conv.cpp : å·ç§¯æ“ä½œã€‚
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <opencv2/opencv.hpp>
@@ -7,18 +7,18 @@
 #include <chrono>
 #include <thread>
 
-// ¾í»ıºË
+// å·ç§¯æ ¸
 std::vector<std::vector<float>> kernelXV= { {1, 1, 1}, {0, 0, 0}, {-1, -1, -1} };
 std::vector<std::vector<float>> kernelYV= { {1, 0, -1}, {1, 0, -1}, {1, 0, -1} };
 
 
-// µ¥Í¨µÀ¾í»ıÔËËã
+// å•é€šé“å·ç§¯è¿ç®—
 void convolve(const cv::Mat& src, const std::vector<std::vector<float>>& kernel, cv::Mat& dst) {
     int padding = kernel.size() / 2;
     cv::Mat paddedSrc;
     cv::copyMakeBorder(src, paddedSrc, padding, padding, padding, padding, cv::BORDER_REPLICATE);
 
-    dst.create(src.size(), CV_32F); // ´´½¨¸¡µãĞÍ¾ØÕó
+    dst.create(src.size(), CV_32F); // åˆ›å»ºæµ®ç‚¹å‹çŸ©é˜µ
     for (int y = 0; y < src.rows; ++y) {
         for (int x = 0; x < src.cols; ++x) {
             float val = 0.0f;
@@ -32,7 +32,7 @@ void convolve(const cv::Mat& src, const std::vector<std::vector<float>>& kernel,
     }
 }
 
-// ±ßÔµ¼ì²âº¯Êı
+// è¾¹ç¼˜æ£€æµ‹å‡½æ•°
 void edgeDetection(const cv::Mat& src, cv::Mat& dst) {
     cv::Mat gradX, gradY;
     convolve(src, kernelXV, gradX);
@@ -44,19 +44,19 @@ void edgeDetection(const cv::Mat& src, cv::Mat& dst) {
     cv::sqrt(gradX.mul(gradX) + gradY.mul(gradY), mag);
     dst.create(src.size(), CV_8U);
 
-    // ½«mag×ª»»ÎªucharÀàĞÍ
-    mag.convertTo(dst, CV_8U); // ½«½á¹û×ª»»»Ø uchar ÀàĞÍ
+    // å°†magè½¬æ¢ä¸ºucharç±»å‹
+    mag.convertTo(dst, CV_8U); // å°†ç»“æœè½¬æ¢å› uchar ç±»å‹
 }
 
-// µ¥Í¨µÀ¾í»ıÔËËã
+// å•é€šé“å·ç§¯è¿ç®—
 void convolveOMP(const cv::Mat& src, const std::vector<std::vector<float>>& kernel, cv::Mat& dst) {
     int padding = kernel.size() / 2;
     cv::Mat paddedSrc;
     cv::copyMakeBorder(src, paddedSrc, padding, padding, padding, padding, cv::BORDER_REPLICATE);
 
-    dst.create(src.size(), CV_32F); // ´´½¨¸¡µãĞÍ¾ØÕó
+    dst.create(src.size(), CV_32F); // åˆ›å»ºæµ®ç‚¹å‹çŸ©é˜µ
 
-    // ²¢ĞĞ»¯¼ÆËã,ÔÚ²¢ĞĞ»¯¿ªÊ¼Ê±¾Í½«µü´ú¾ùÔÈµØ·ÖÅä¸ø¸÷¸öÏß³Ì
+    // å¹¶è¡ŒåŒ–è®¡ç®—,åœ¨å¹¶è¡ŒåŒ–å¼€å§‹æ—¶å°±å°†è¿­ä»£å‡åŒ€åœ°åˆ†é…ç»™å„ä¸ªçº¿ç¨‹
 #pragma omp parallel for schedule(static)
     for (int y = 0; y < src.rows; ++y) {
         for (int x = 0; x < src.cols; ++x) {
@@ -71,7 +71,7 @@ void convolveOMP(const cv::Mat& src, const std::vector<std::vector<float>>& kern
     }
 }
 
-// OpenMP²¢ĞĞ»¯±ßÔµ¼ì²âº¯Êı
+// OpenMPå¹¶è¡ŒåŒ–è¾¹ç¼˜æ£€æµ‹å‡½æ•°
 void edgeDetectionOMP(const cv::Mat& src, cv::Mat& dst) {
     cv::Mat gradX, gradY;
     convolveOMP(src, kernelXV, gradX);
@@ -82,7 +82,7 @@ void edgeDetectionOMP(const cv::Mat& src, cv::Mat& dst) {
     gradY.convertTo(gradY, CV_32F);
     cv::sqrt(gradX.mul(gradX) + gradY.mul(gradY), mag);
     //cv::imshow("Origin", mag);
-    mag.convertTo(dst, CV_8U); // ½«½á¹û×ª»»»Ø uchar ÀàĞÍ
+    mag.convertTo(dst, CV_8U); // å°†ç»“æœè½¬æ¢å› uchar ç±»å‹
 
 }
 
@@ -96,7 +96,7 @@ int main() {
         return -1;
     }
     
-    // ÉèÖÃ´°¿Ú´óĞ¡
+    // è®¾ç½®çª—å£å¤§å°
     int windowWidth = src.cols;
     int windowHeight = src.rows;
 

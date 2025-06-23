@@ -1,4 +1,4 @@
-// mergeSort.cpp : ¹é²¢ÅÅĞò¡£
+// mergeSort.cpp : å½’å¹¶æ’åºã€‚
 
 #include <iostream>
 #include <omp.h>
@@ -11,24 +11,24 @@
 
 std::mutex mtx;
 
-// ¹é²¢Á½¸öÒÑÅÅĞòµÄ×ÓÏòÁ¿
+// å½’å¹¶ä¸¤ä¸ªå·²æ’åºçš„å­å‘é‡
 void merge(std::vector<int>& vec, int left, int mid, int right) {
     int n1 = mid - left + 1;
     int n2 = right - mid;
 
-    // ´´½¨ÁÙÊ±ÏòÁ¿
+    // åˆ›å»ºä¸´æ—¶å‘é‡
     std::vector<int> L(n1), R(n2);
 
-    // ¸´ÖÆÊı¾İµ½ÁÙÊ±ÏòÁ¿
+    // å¤åˆ¶æ•°æ®åˆ°ä¸´æ—¶å‘é‡
     for (int i = 0; i < n1; i++)
         L[i] = vec[left + i];
     for (int j = 0; j < n2; j++)
         R[j] = vec[mid + 1 + j];
 
-    // ºÏ²¢ÁÙÊ±ÏòÁ¿»Øµ½Ô­ÏòÁ¿
-    int i = 0; // ³õÊ¼Ë÷Òı of µÚÒ»¸ö×ÓÏòÁ¿
-    int j = 0; // ³õÊ¼Ë÷Òı of µÚ¶ş¸ö×ÓÏòÁ¿
-    int k = left; // ³õÊ¼Ë÷Òı of ºÏ²¢ºóµÄ×ÓÏòÁ¿
+    // åˆå¹¶ä¸´æ—¶å‘é‡å›åˆ°åŸå‘é‡
+    int i = 0; // åˆå§‹ç´¢å¼• of ç¬¬ä¸€ä¸ªå­å‘é‡
+    int j = 0; // åˆå§‹ç´¢å¼• of ç¬¬äºŒä¸ªå­å‘é‡
+    int k = left; // åˆå§‹ç´¢å¼• of åˆå¹¶åçš„å­å‘é‡
 
     while (i < n1 && j < n2) {
         if (L[i] <= R[j]) {
@@ -42,7 +42,7 @@ void merge(std::vector<int>& vec, int left, int mid, int right) {
         k++;
     }
 
-    // ¸´ÖÆÊ£ÓàÔªËØ
+    // å¤åˆ¶å‰©ä½™å…ƒç´ 
     while (i < n1) {
         vec[k] = L[i];
         i++;
@@ -56,7 +56,7 @@ void merge(std::vector<int>& vec, int left, int mid, int right) {
     }
 }
 
-// ²åÈëÅÅĞò
+// æ’å…¥æ’åº
 void insertionSort(std::vector<int>& vec, int left, int right) {
     for (int i = left + 1; i <= right; i++) {
         int key = vec[i];
@@ -69,31 +69,31 @@ void insertionSort(std::vector<int>& vec, int left, int right) {
     }
 }
 
-// ¹é²¢ÅÅĞòº¯Êı£¨·Ç¶àÏß³Ì°æ±¾£©
+// å½’å¹¶æ’åºå‡½æ•°ï¼ˆéå¤šçº¿ç¨‹ç‰ˆæœ¬ï¼‰
 void mergeSort(std::vector<int>& vec, int left, int right) {
     if (left >= right) {
-        return; // µİ¹éÖÕÖ¹Ìõ¼ş
+        return; // é€’å½’ç»ˆæ­¢æ¡ä»¶
     }
 
     int mid = left + (right - left) / 2;
 
-    // µİ¹éÅÅĞò×óÓÒ×ÓÏòÁ¿
+    // é€’å½’æ’åºå·¦å³å­å‘é‡
     mergeSort(vec, left, mid);
     mergeSort(vec, mid + 1, right);
 
-    // ºÏ²¢Á½¸ö×ÓÏòÁ¿
+    // åˆå¹¶ä¸¤ä¸ªå­å‘é‡
     merge(vec, left, mid, right);
 }
 
-// ¹é²¢ÅÅĞòº¯Êı£¨·Ç¶àÏß³Ì°æ±¾,½ÏĞ¡Ê±Ê¹ÓÃ²åÈëÅÅĞò£©
+// å½’å¹¶æ’åºå‡½æ•°ï¼ˆéå¤šçº¿ç¨‹ç‰ˆæœ¬,è¾ƒå°æ—¶ä½¿ç”¨æ’å…¥æ’åºï¼‰
 void mergeSort_V1(std::vector<int>& vec, int left, int right) {
     if (left >= right) {
-        return; // µİ¹éÖÕÖ¹Ìõ¼ş
+        return; // é€’å½’ç»ˆæ­¢æ¡ä»¶
     }
 
     int mid = left + (right - left) / 2;
 
-    // ¶Ô½ÏĞ¡µÄ×ÓÊı×éÊ¹ÓÃ²åÈëÅÅĞò
+    // å¯¹è¾ƒå°çš„å­æ•°ç»„ä½¿ç”¨æ’å…¥æ’åº
     const int INSERTION_SORT_THRESHOLD = 16;
     if (right - left < INSERTION_SORT_THRESHOLD) {
         insertionSort(vec, left, right);
@@ -110,25 +110,25 @@ void mergeSort_V1(std::vector<int>& vec, int left, int right) {
         }
     }
 
-    // ºÏ²¢Á½¸ö×ÓÏòÁ¿
+    // åˆå¹¶ä¸¤ä¸ªå­å‘é‡
     merge(vec, left, mid, right);
 }
 
 
-// ¶àÏß³Ì°æ±¾µÄ¹é²¢ÅÅĞò
+// å¤šçº¿ç¨‹ç‰ˆæœ¬çš„å½’å¹¶æ’åº
 void mergeSort_MT(std::vector<int>& vec, int left, int right) {
     if (left >= right)
         return;
 
     int mid = left + (right - left) / 2;
 
-    // ¶Ô½ÏĞ¡µÄ×ÓÊı×éÊ¹ÓÃ²åÈëÅÅĞò
+    // å¯¹è¾ƒå°çš„å­æ•°ç»„ä½¿ç”¨æ’å…¥æ’åº
     const int INSERTION_SORT_THRESHOLD = 16;
     if (right - left < INSERTION_SORT_THRESHOLD) {
         insertionSort(vec, left, right);
     }
     else {
-        // Ê¹ÓÃ²¢ĞĞ for Ñ­»·À´²¢ĞĞÖ´ĞĞ×óÓÒ×ÓÊı×éµÄÅÅĞòÈÎÎñ
+        // ä½¿ç”¨å¹¶è¡Œ for å¾ªç¯æ¥å¹¶è¡Œæ‰§è¡Œå·¦å³å­æ•°ç»„çš„æ’åºä»»åŠ¡
 #pragma omp parallel for
         for (int i = 0; i < 2; ++i) {
             if (i == 0) {
@@ -143,7 +143,7 @@ void mergeSort_MT(std::vector<int>& vec, int left, int right) {
     merge(vec, left, mid, right);
 }
 
-// ÓÃÓÚ³õÊ¼»¯ÏòÁ¿µÄ¶àÏß³Ìº¯Êı
+// ç”¨äºåˆå§‹åŒ–å‘é‡çš„å¤šçº¿ç¨‹å‡½æ•°
 void fillVectorWithRandoms(std::vector<int>& vec, int start, int end, std::default_random_engine& engine) {
     std::uniform_int_distribution<int> dist(0, 100000);
 
@@ -154,43 +154,43 @@ void fillVectorWithRandoms(std::vector<int>& vec, int start, int end, std::defau
 }
 
 int main() {
-    const int length = 10000000; // ÏòÁ¿³¤¶È
+    const int length = 10000000; // å‘é‡é•¿åº¦
     std::vector<int> array(length);
 
-    // Ê¹ÓÃ±¾µØÊ±¼ä×÷ÎªÖÖ×Ó³õÊ¼»¯Ëæ»úÊıÉú³ÉÆ÷
+    // ä½¿ç”¨æœ¬åœ°æ—¶é—´ä½œä¸ºç§å­åˆå§‹åŒ–éšæœºæ•°ç”Ÿæˆå™¨
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     const int numThreads = 4;
     int segmentLength = length / numThreads;
     std::thread threads[numThreads];
 
-    // ÎªÃ¿¸öÏß³Ì´´½¨¶ÀÁ¢µÄËæ»úÊıÉú³ÉÆ÷
+    // ä¸ºæ¯ä¸ªçº¿ç¨‹åˆ›å»ºç‹¬ç«‹çš„éšæœºæ•°ç”Ÿæˆå™¨
     std::default_random_engine engines[numThreads];
 
-    // ÎªÃ¿¸öÉú³ÉÆ÷ÉèÖÃ²»Í¬µÄÖÖ×Ó
+    // ä¸ºæ¯ä¸ªç”Ÿæˆå™¨è®¾ç½®ä¸åŒçš„ç§å­
     for (int i = 0; i < numThreads; ++i) {
         engines[i].seed(seed + i);
     }
 
-    // ´´½¨²¢Æô¶¯Ïß³Ì
+    // åˆ›å»ºå¹¶å¯åŠ¨çº¿ç¨‹
     for (int i = 0; i < numThreads; ++i) {
         int start = i * segmentLength;
         int end = (i == numThreads - 1) ? length - 1 : (i + 1) * segmentLength - 1;
         threads[i] = std::thread(fillVectorWithRandoms, std::ref(array), start, end, std::ref(engines[i]));
     }
 
-    // µÈ´ıËùÓĞÏß³ÌÍê³É
+    // ç­‰å¾…æ‰€æœ‰çº¿ç¨‹å®Œæˆ
     for (auto& thread : threads) {
         thread.join();
     }
 
 
 
-    // ¸´ÖÆÏòÁ¿ÒÔ½øĞĞ¶àÏß³ÌÅÅĞò
+    // å¤åˆ¶å‘é‡ä»¥è¿›è¡Œå¤šçº¿ç¨‹æ’åº
     std::vector<int> array_v1(array);
     std::vector<int> array_mt(array);
     std::vector<int> array_lib(array);
 
-    // ¼ÆËã·Ç¶àÏß³ÌÅÅĞòµÄÊ±¼ä
+    // è®¡ç®—éå¤šçº¿ç¨‹æ’åºçš„æ—¶é—´
     auto start1 = std::chrono::high_resolution_clock::now();
     mergeSort(array, 0, length - 1);
     auto end1 = std::chrono::high_resolution_clock::now();
@@ -199,17 +199,17 @@ int main() {
     mergeSort_V1(array_v1, 0, length - 1);
     auto end1_v1 = std::chrono::high_resolution_clock::now();
 
-    // ¼ÆËã¶àÏß³ÌÅÅĞòµÄÊ±¼ä
+    // è®¡ç®—å¤šçº¿ç¨‹æ’åºçš„æ—¶é—´
     auto start2 = std::chrono::high_resolution_clock::now();
     mergeSort_MT(array_mt, 0, length - 1);
     auto end2 = std::chrono::high_resolution_clock::now();
 
-    // Ê¹ÓÃ±ê×¼¿âµÄÅÅĞòº¯Êı
+    // ä½¿ç”¨æ ‡å‡†åº“çš„æ’åºå‡½æ•°
     auto start3 = std::chrono::high_resolution_clock::now();
     std::sort(array_lib.begin(), array_lib.end());
     auto end3 = std::chrono::high_resolution_clock::now();
 
-    // Êä³ö½á¹ûºÍºÄÊ±
+    // è¾“å‡ºç»“æœå’Œè€—æ—¶
     std::cout << "First 200 elements after sorting: ";
     for (int i = 0; i < 200; i++) {
         std::cout << array[i] << " ";

@@ -1,4 +1,4 @@
-//polynomialMultiplication.cpp : ¶àÏîÊ½³Ë·¨
+//polynomialMultiplication.cpp : å¤šé¡¹å¼ä¹˜æ³•
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -20,7 +20,7 @@
 #include <chrono>
 //#include <numbers>
 
-// ¿ìËÙ¸µÀïÒ¶±ä»»
+// å¿«é€Ÿå‚…é‡Œå¶å˜æ¢
 void fft(std::vector<std::complex<double>>& x, bool invert) {
     int N = x.size();
 
@@ -54,7 +54,7 @@ void fft(std::vector<std::complex<double>>& x, bool invert) {
     }
 }
 
-// ¶àÏîÊ½³Ë·¨
+// å¤šé¡¹å¼ä¹˜æ³•
 void polynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     int n = 1;
     while (n < A.size() + B.size()) {
@@ -84,7 +84,7 @@ void polynomialMultiplication(const std::vector<double>& A, const std::vector<do
     }
 }
 
-// ÆÓËØ¶àÏîÊ½³Ë·¨
+// æœ´ç´ å¤šé¡¹å¼ä¹˜æ³•
 void naivePolynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     MUL.resize(A.size() + B.size() - 1);
     for (size_t i = 0; i < A.size(); ++i) {
@@ -94,7 +94,7 @@ void naivePolynomialMultiplication(const std::vector<double>& A, const std::vect
     }
 }
 
-// Ê¹ÓÃ OpenMP µÄÆÓËØ¶àÏîÊ½³Ë·¨
+// ä½¿ç”¨ OpenMP çš„æœ´ç´ å¤šé¡¹å¼ä¹˜æ³•
 void openmpNaivePolynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     MUL.resize(A.size() + B.size() - 1);
     int i = 0;
@@ -106,7 +106,7 @@ void openmpNaivePolynomialMultiplication(const std::vector<double>& A, const std
     }
 }
 
-// ½áºÏ OpenMP ºÍ FFT ÓÅ»¯µÄ¶àÏîÊ½³Ë·¨
+// ç»“åˆ OpenMP å’Œ FFT ä¼˜åŒ–çš„å¤šé¡¹å¼ä¹˜æ³•
 void openmpPolynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
     int n = 1;
     while (n < A.size() + B.size()) {
@@ -140,32 +140,32 @@ void openmpPolynomialMultiplication(const std::vector<double>& A, const std::vec
     }
 }
 
-// ´òÓ¡¶àÏîÊ½µÄÇ°lenÏî
+// æ‰“å°å¤šé¡¹å¼çš„å‰lené¡¹
 void PrintV(const std::vector<double>& A, int len) {
-    // ±éÀú¶àÏîÊ½µÄÇ°lenÏî
+    // éå†å¤šé¡¹å¼çš„å‰lené¡¹
     for (int i = 0; i < len && i < A.size(); ++i) {
-        // Èç¹ûÏµÊı²»Îª0£¬Ôò´òÓ¡¸ÃÏî
+        // å¦‚æœç³»æ•°ä¸ä¸º0ï¼Œåˆ™æ‰“å°è¯¥é¡¹
         if (A[i] != 0) {
-            if (i > 0) std::cout << "+"; // ³ıÁËµÚÒ»ÏîÍâ£¬ÆäÓàÏîÇ°Ãæ¶¼¼Ó'+'ºÅ
-            if (A[i] != 1 || i == 0) std::cout << A[i]; // Èç¹ûÏµÊı²»ÊÇ1»òÕßµ±Ç°ÏîÊÇ³£ÊıÏî£¬Ôò´òÓ¡ÏµÊı
-            if (i == 1) std::cout << "x"; // µ±Ç°ÏîÊÇÒ»´ÎÏî
-            else if (i > 1) std::cout << "x^" << i; // µ±Ç°ÏîÊÇ¸ßÓÚÒ»´ÎµÄÏî
+            if (i > 0) std::cout << "+"; // é™¤äº†ç¬¬ä¸€é¡¹å¤–ï¼Œå…¶ä½™é¡¹å‰é¢éƒ½åŠ '+'å·
+            if (A[i] != 1 || i == 0) std::cout << A[i]; // å¦‚æœç³»æ•°ä¸æ˜¯1æˆ–è€…å½“å‰é¡¹æ˜¯å¸¸æ•°é¡¹ï¼Œåˆ™æ‰“å°ç³»æ•°
+            if (i == 1) std::cout << "x"; // å½“å‰é¡¹æ˜¯ä¸€æ¬¡é¡¹
+            else if (i > 1) std::cout << "x^" << i; // å½“å‰é¡¹æ˜¯é«˜äºä¸€æ¬¡çš„é¡¹
         }
     }
     std::cout << std::endl;
 }
 
 int main() {
-    // ³õÊ¼»¯Ëæ»úÊıÉú³ÉÆ÷
+    // åˆå§‹åŒ–éšæœºæ•°ç”Ÿæˆå™¨
     std::mt19937 gen(std::time(nullptr));
     std::uniform_real_distribution<> dis(-100, 100);
 
-    // ³¤¶ÈÎª10000µÄ¶àÏîÊ½
+    // é•¿åº¦ä¸º10000çš„å¤šé¡¹å¼
     int length = 10000;
     std::vector<double> A(length);
     std::vector<double> B(length);
 
-    // Îª¶àÏîÊ½Ëæ»ú¸³Öµ
+    // ä¸ºå¤šé¡¹å¼éšæœºèµ‹å€¼
     for (int i = 0; i < length; ++i) {
         A[i] = dis(gen);
         B[i] = dis(gen);
@@ -175,7 +175,7 @@ int main() {
 
     std::cout << "Comparing algorithms:" << std::endl;
 
-    // ±È½ÏËÄÖÖËã·¨µÄ½á¹ûºÍÔËĞĞÊ±¼ä
+    // æ¯”è¾ƒå››ç§ç®—æ³•çš„ç»“æœå’Œè¿è¡Œæ—¶é—´
     {
         std::vector<double> result(length + length - 1);
         auto start = std::chrono::high_resolution_clock::now();

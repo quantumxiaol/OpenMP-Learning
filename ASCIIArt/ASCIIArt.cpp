@@ -5,15 +5,15 @@
 #include <omp.h>
 #include <string>
 #include <chrono>
-// ¶¨Òå×Ö·û¼¯£¬ÓÃÓÚ±íÊ¾²»Í¬µÄ»Ò¶È¼¶±ğ
+// å®šä¹‰å­—ç¬¦é›†ï¼Œç”¨äºè¡¨ç¤ºä¸åŒçš„ç°åº¦çº§åˆ«
 const char* ascii_chars = " .,-~:;=!*#$@";
 
-// º¯Êı£º½«»Ò¶ÈÖµÓ³Éäµ½×Ö·û
+// å‡½æ•°ï¼šå°†ç°åº¦å€¼æ˜ å°„åˆ°å­—ç¬¦
 char grayToChar(int gray) {
-    // È·±£»Ò¶ÈÖµÔÚ0-255Ö®¼ä
+    // ç¡®ä¿ç°åº¦å€¼åœ¨0-255ä¹‹é—´
     if (gray < 0) gray = 0;
     if (gray > 255) gray = 255;
-    // Ó³Éä»Ò¶Èµ½×Ö·û
+    // æ˜ å°„ç°åº¦åˆ°å­—ç¬¦
     return ascii_chars[gray * (strlen(ascii_chars) - 1) / 255];
 }
 
@@ -24,24 +24,24 @@ void ReadImg(const std::string& imgPath) {
         return ;
     }
 
-    // Ëõ·ÅÍ¼Æ¬
+    // ç¼©æ”¾å›¾ç‰‡
     cv::resize(img, img, cv::Size(), 0.2, 0.2, cv::INTER_AREA);
 
-    // ±éÀúËùÓĞÏñËØ
+    // éå†æ‰€æœ‰åƒç´ 
     for (int i = 0; i < img.rows; ++i) {
         for (int j = 0; j < img.cols; ++j) {
-            // »ñÈ¡µ±Ç°ÏñËØµÄ»Ò¶ÈÖµ
+            // è·å–å½“å‰åƒç´ çš„ç°åº¦å€¼
             uchar gray = img.at<uchar>(i, j);
-            // ×ª»»»Ò¶ÈÖµÎª×Ö·û
+            // è½¬æ¢ç°åº¦å€¼ä¸ºå­—ç¬¦
             std::cout << grayToChar(gray);
         }
         std::cout << std::endl;
     }
 }
 
-// º¯Êı£º¶ÁÈ¡²¢ÏÔÊ¾ÊÓÆµ
+// å‡½æ•°ï¼šè¯»å–å¹¶æ˜¾ç¤ºè§†é¢‘
 void ReadVideo(const std::string& videoPath) {
-    cv::VideoCapture cap(videoPath); // ´ò¿ªÊÓÆµÎÄ¼ş
+    cv::VideoCapture cap(videoPath); // æ‰“å¼€è§†é¢‘æ–‡ä»¶
     if (!cap.isOpened()) {
         std::cerr << "Error: Could not open the video file." << std::endl;
         return;
@@ -50,20 +50,20 @@ void ReadVideo(const std::string& videoPath) {
     cv::Mat frame, grayFrame;
 
     while (true) {
-        cap >> frame; // »ñÈ¡ÏÂÒ»Ö¡
-        if (frame.empty()) break; // Èç¹ûÃ»ÓĞ»ñÈ¡µ½Ö¡£¬ÔòÍË³öÑ­»·
+        cap >> frame; // è·å–ä¸‹ä¸€å¸§
+        if (frame.empty()) break; // å¦‚æœæ²¡æœ‰è·å–åˆ°å¸§ï¼Œåˆ™é€€å‡ºå¾ªç¯
 
-        // ×ª»»Îª»Ò¶ÈÍ¼
+        // è½¬æ¢ä¸ºç°åº¦å›¾
         cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
 
-        // Ëõ·ÅÍ¼Æ¬ÒÔÊÊÓ¦ÖÕ¶Ë´°¿Ú
+        // ç¼©æ”¾å›¾ç‰‡ä»¥é€‚åº”ç»ˆç«¯çª—å£
         cv::resize(grayFrame, grayFrame, cv::Size(), 0.2, 0.2, cv::INTER_AREA);
 
-        // Çå³ıÖ®Ç°µÄÖ¡
-        system("cls"); // WindowsÏµÍ³Ê¹ÓÃ cls ÃüÁîÇåÆÁ
-        // ÔÚUnix/LinuxÏµÍ³ÉÏ¿ÉÒÔÊ¹ÓÃ system("clear");
+        // æ¸…é™¤ä¹‹å‰çš„å¸§
+        system("cls"); // Windowsç³»ç»Ÿä½¿ç”¨ cls å‘½ä»¤æ¸…å±
+        // åœ¨Unix/Linuxç³»ç»Ÿä¸Šå¯ä»¥ä½¿ç”¨ system("clear");
 
-        // ±éÀúËùÓĞÏñËØ²¢´òÓ¡ASCII×Ö·û
+        // éå†æ‰€æœ‰åƒç´ å¹¶æ‰“å°ASCIIå­—ç¬¦
         for (int i = 0; i < grayFrame.rows; ++i) {
             for (int j = 0; j < grayFrame.cols; ++j) {
                 uchar gray = grayFrame.at<uchar>(i, j);
@@ -72,45 +72,45 @@ void ReadVideo(const std::string& videoPath) {
             std::cout << std::endl;
         }
 
-        // ¿ØÖÆÖ¡ÂÊ£¬ÕâÀïÉèÖÃÎªÃ¿Ãë30Ö¡
-        cv::waitKey(33); // 33ºÁÃë´óÔ¼ÊÇ30Ö¡/Ãë
+        // æ§åˆ¶å¸§ç‡ï¼Œè¿™é‡Œè®¾ç½®ä¸ºæ¯ç§’30å¸§
+        cv::waitKey(33); // 33æ¯«ç§’å¤§çº¦æ˜¯30å¸§/ç§’
     }
 }
 
-// º¯Êı£º½«ASCII×Ö·ûäÖÈ¾µ½Í¼ÏñÉÏ
+// å‡½æ•°ï¼šå°†ASCIIå­—ç¬¦æ¸²æŸ“åˆ°å›¾åƒä¸Š
 cv::Mat renderAsciiArt(const cv::Mat& grayFrame, int blockWidth, int blockHeight) {
     int frameWidth = grayFrame.cols;
     int frameHeight = grayFrame.rows;
 
-    // ¼ÆËãÊä³öÍ¼Ïñ³ß´ç
-    int outputWidth = (frameWidth / blockWidth) * 8;  // Ã¿¸ö×Ö·ûÓÃ8ÏñËØ¿í
-    int outputHeight = (frameHeight / blockHeight) * 16; // Ã¿¸ö×Ö·ûÓÃ16ÏñËØ¸ß
+    // è®¡ç®—è¾“å‡ºå›¾åƒå°ºå¯¸
+    int outputWidth = (frameWidth / blockWidth) * 8;  // æ¯ä¸ªå­—ç¬¦ç”¨8åƒç´ å®½
+    int outputHeight = (frameHeight / blockHeight) * 16; // æ¯ä¸ªå­—ç¬¦ç”¨16åƒç´ é«˜
 
-    // ´´½¨Ò»¸ö¿Õ°×Í¼Ïñ
+    // åˆ›å»ºä¸€ä¸ªç©ºç™½å›¾åƒ
     cv::Mat outputImage(outputHeight, outputWidth, CV_8UC3, cv::Scalar(0, 0, 0));
 
     for (int y = 0; y < frameHeight; y += blockHeight) {
         for (int x = 0; x < frameWidth; x += blockWidth) {
-            // È·±£ROI²»³¬³öÍ¼Ïñ±ß½ç
+            // ç¡®ä¿ROIä¸è¶…å‡ºå›¾åƒè¾¹ç•Œ
             int width = std::min(blockWidth, frameWidth - x);
             int height = std::min(blockHeight, frameHeight - y);
 
-            // »ñÈ¡µ±Ç°¿é
+            // è·å–å½“å‰å—
             cv::Rect roi(x, y, width, height);
             cv::Mat block = grayFrame(roi);
 
-            // ¼ÆËãµ±Ç°¿éµÄÆ½¾ù»Ò¶ÈÖµ
+            // è®¡ç®—å½“å‰å—çš„å¹³å‡ç°åº¦å€¼
             cv::Scalar mean = cv::mean(block);
             int avgGray = static_cast<int>(mean[0]);
 
-            // ½«»Ò¶ÈÖµÓ³Éäµ½×Ö·û
+            // å°†ç°åº¦å€¼æ˜ å°„åˆ°å­—ç¬¦
             char ch = grayToChar(avgGray);
 
-            // ¼ÆËãµ±Ç°×Ö·ûµÄÎ»ÖÃ
+            // è®¡ç®—å½“å‰å­—ç¬¦çš„ä½ç½®
             int outputX = (x / blockWidth) * 8;
             int outputY = (y / blockHeight) * 16;
 
-            // »æÖÆ×Ö·û
+            // ç»˜åˆ¶å­—ç¬¦
             cv::putText(outputImage, std::string(1, ch), cv::Point(outputX, outputY + 16),
                 cv::FONT_HERSHEY_SIMPLEX, 0.4, cv::Scalar(255, 255, 255), 1, 8);
         }
@@ -120,29 +120,29 @@ cv::Mat renderAsciiArt(const cv::Mat& grayFrame, int blockWidth, int blockHeight
 }
 
 
-// º¯Êı£º´¦ÀíÊÓÆµ²¢Éú³É×Ö·û»­ÊÓÆµ£¨Ê¹ÓÃOpenMPÓÅ»¯£©
-// º¯Êı£º´¦ÀíÊÓÆµ²¢Éú³É×Ö·û»­ÊÓÆµ
+// å‡½æ•°ï¼šå¤„ç†è§†é¢‘å¹¶ç”Ÿæˆå­—ç¬¦ç”»è§†é¢‘ï¼ˆä½¿ç”¨OpenMPä¼˜åŒ–ï¼‰
+// å‡½æ•°ï¼šå¤„ç†è§†é¢‘å¹¶ç”Ÿæˆå­—ç¬¦ç”»è§†é¢‘
 void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
-    cv::VideoCapture cap(inputPath); // ´ò¿ªÊäÈëÊÓÆµÎÄ¼ş
+    cv::VideoCapture cap(inputPath); // æ‰“å¼€è¾“å…¥è§†é¢‘æ–‡ä»¶
     if (!cap.isOpened()) {
         std::cerr << "Error: Could not open the video file: " << inputPath << std::endl;
         return;
     }
 
-    // »ñÈ¡ÊÓÆµÊôĞÔ
+    // è·å–è§†é¢‘å±æ€§
     double fps = cap.get(CV_CAP_PROP_FPS);
     int frameWidth = static_cast<int>(cap.get(CV_CAP_PROP_FRAME_WIDTH));
     int frameHeight = static_cast<int>(cap.get(CV_CAP_PROP_FRAME_HEIGHT));
 
-    // ¶¨Òå¿é´óĞ¡
-    int blockWidth = 8;  // ¿é¿í¶È
-    int blockHeight = 16; // ¿é¸ß¶È
+    // å®šä¹‰å—å¤§å°
+    int blockWidth = 8;  // å—å®½åº¦
+    int blockHeight = 16; // å—é«˜åº¦
 
-    // ¼ÆËãÊä³öÊÓÆµµÄ³ß´ç
-    int outputWidth = (frameWidth / blockWidth) * 8;  // Ã¿¸ö×Ö·ûÓÃ8ÏñËØ¿í
-    int outputHeight = (frameHeight / blockHeight) * 16; // Ã¿¸ö×Ö·ûÓÃ16ÏñËØ¸ß
+    // è®¡ç®—è¾“å‡ºè§†é¢‘çš„å°ºå¯¸
+    int outputWidth = (frameWidth / blockWidth) * 8;  // æ¯ä¸ªå­—ç¬¦ç”¨8åƒç´ å®½
+    int outputHeight = (frameHeight / blockHeight) * 16; // æ¯ä¸ªå­—ç¬¦ç”¨16åƒç´ é«˜
 
-    // ´òÓ¡ÊäÈëÂ·¾¶ÒÔ¹©µ÷ÊÔ
+    // æ‰“å°è¾“å…¥è·¯å¾„ä»¥ä¾›è°ƒè¯•
     std::cout << "Input video path: " << inputPath << std::endl;
     std::cout << "Output video path: " << outputPath << std::endl;
     std::cout << "Input video properties:" << std::endl;
@@ -151,7 +151,7 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
     std::cout << "Frame Height: " << frameHeight << std::endl;
     std::cout << "Output video dimensions: " << outputWidth << "x" << outputHeight << std::endl;
 
-    // ³¢ÊÔÊ¹ÓÃ²»Í¬µÄ±à½âÂëÆ÷
+    // å°è¯•ä½¿ç”¨ä¸åŒçš„ç¼–è§£ç å™¨
     //std::vector<int> fourccs = { CV_FOURCC('X', '2', '6', '4'), CV_FOURCC('X', 'V', 'I', 'D'), CV_FOURCC('D', 'I', 'V', 'X') };
     std::vector<int> fourccs = { CV_FOURCC('X', 'V', 'I', 'D'), CV_FOURCC('D', 'I', 'V', 'X') };
 
@@ -171,20 +171,20 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
     cv::Mat frame, grayFrame, asciiFrame;
 
     while (true) {
-        cap >> frame; // »ñÈ¡ÏÂÒ»Ö¡
-        if (frame.empty()) break; // Èç¹ûÃ»ÓĞ»ñÈ¡µ½Ö¡£¬ÔòÍË³öÑ­»·
+        cap >> frame; // è·å–ä¸‹ä¸€å¸§
+        if (frame.empty()) break; // å¦‚æœæ²¡æœ‰è·å–åˆ°å¸§ï¼Œåˆ™é€€å‡ºå¾ªç¯
 
-        // ×ª»»Îª»Ò¶ÈÍ¼
+        // è½¬æ¢ä¸ºç°åº¦å›¾
         cv::cvtColor(frame, grayFrame, CV_BGR2GRAY);
 
-        // äÖÈ¾ASCIIÒÕÊõµ½Í¼Ïñ
+        // æ¸²æŸ“ASCIIè‰ºæœ¯åˆ°å›¾åƒ
         asciiFrame = renderAsciiArt(grayFrame, blockWidth, blockHeight);
 
-        // Ğ´ÈëÖ¡µ½Êä³öÊÓÆµ
+        // å†™å…¥å¸§åˆ°è¾“å‡ºè§†é¢‘
         writer.write(asciiFrame);
     }
 
-    // ÊÍ·Å×ÊÔ´
+    // é‡Šæ”¾èµ„æº
     cap.release();
     writer.release();
 }

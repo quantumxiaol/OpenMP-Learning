@@ -15,18 +15,18 @@
 typedef pcl::PointXYZ PointT;
 int cloudRipGen()
 {
-    // ÉèÖÃµãÔÆ²ÎÊı
-    int width = 3000; // Æ½Ãæ¿í¶È
-    int height = 3000; // Æ½Ãæ¸ß¶È
-    float step = 1.0f; // µãÖ®¼äµÄ²½³¤
-    int num_ripples = 250; // Á°äôÊıÁ¿
-    float max_ripple_radius = 25.0f; // ×î´óÁ°äôÓ°Ïì°ë¾¶
-    float max_ripple_strength = 13.0f; // ×î´óÁ°äôÇ¿¶È
+    // è®¾ç½®ç‚¹äº‘å‚æ•°
+    int width = 3000; // å¹³é¢å®½åº¦
+    int height = 3000; // å¹³é¢é«˜åº¦
+    float step = 1.0f; // ç‚¹ä¹‹é—´çš„æ­¥é•¿
+    int num_ripples = 250; // æ¶Ÿæ¼ªæ•°é‡
+    float max_ripple_radius = 25.0f; // æœ€å¤§æ¶Ÿæ¼ªå½±å“åŠå¾„
+    float max_ripple_strength = 13.0f; // æœ€å¤§æ¶Ÿæ¼ªå¼ºåº¦
 
-    // ´´½¨µãÔÆ
+    // åˆ›å»ºç‚¹äº‘
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    // Éú³ÉÆ½ÃæµãÔÆ
+    // ç”Ÿæˆå¹³é¢ç‚¹äº‘
     for (int i = 0; i < width; i += step)
     {
         for (int j = 0; j < height; j += step)
@@ -34,20 +34,20 @@ int cloudRipGen()
             pcl::PointXYZ point;
             point.x = i;
             point.y = j;
-            point.z = 0.0f; // ³õÊ¼zÖµÉèÎª0
+            point.z = 0.0f; // åˆå§‹zå€¼è®¾ä¸º0
 
             cloud->push_back(point);
         }
     }
 
-    // Ëæ»úÑ¡Ôñ¶à¸öµã×÷ÎªÁ°äôÖĞĞÄ
+    // éšæœºé€‰æ‹©å¤šä¸ªç‚¹ä½œä¸ºæ¶Ÿæ¼ªä¸­å¿ƒ
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, width);
     std::uniform_real_distribution<> radius_dis(0.0f, max_ripple_radius);
     std::uniform_real_distribution<> strength_dis(0.0f, max_ripple_strength);
 
-    // Éú³ÉÁ°äô
+    // ç”Ÿæˆæ¶Ÿæ¼ª
     for (int i = 0; i < num_ripples; ++i)
     {
         float center_x = dis(gen);
@@ -55,7 +55,7 @@ int cloudRipGen()
         float ripple_radius = radius_dis(gen);
         float ripple_strength = strength_dis(gen);
 
-        // Ó¦ÓÃÁ°äôĞ§¹û
+        // åº”ç”¨æ¶Ÿæ¼ªæ•ˆæœ
         for (auto& point : cloud->points)
         {
             float dx = point.x - center_x;
@@ -64,20 +64,20 @@ int cloudRipGen()
 
             if (distance <= ripple_radius)
             {
-                // ¼ÆËãZÖµµÄ±ä»¯
+                // è®¡ç®—Zå€¼çš„å˜åŒ–
                 point.z += ripple_strength * (1 - distance / ripple_radius);
             }
         }
     }
 
-    // Êä³öµãÔÆ
+    // è¾“å‡ºç‚¹äº‘
     pcl::io::savePCDFileASCII("C:\\work\\OpenMPLearning\\ripple.pcd", *cloud);
 
     return 0;
 }
 
 
-//Ê¹ÓÃkdtreeËÑË÷·½·¨¼ì²â¾Ö²¿´æÔÚn¸ö¸ß¶È²î³¬¹ıãĞÖµµÄµã
+//ä½¿ç”¨kdtreeæœç´¢æ–¹æ³•æ£€æµ‹å±€éƒ¨å­˜åœ¨nä¸ªé«˜åº¦å·®è¶…è¿‡é˜ˆå€¼çš„ç‚¹
 void PointLocalNExistNDetection(
     std::string path,
     std::string inputfilename,
@@ -143,7 +143,7 @@ void PointLocalNExistNDetection(
 }
 
 
-//Ê¹ÓÃkdtreeËÑË÷·½·¨¼ì²â¾Ö²¿´æÔÚn¸ö¸ß¶È²î³¬¹ıãĞÖµµÄµã£¬¶àÏß³Ì°æ±¾
+//ä½¿ç”¨kdtreeæœç´¢æ–¹æ³•æ£€æµ‹å±€éƒ¨å­˜åœ¨nä¸ªé«˜åº¦å·®è¶…è¿‡é˜ˆå€¼çš„ç‚¹ï¼Œå¤šçº¿ç¨‹ç‰ˆæœ¬
 void PointLocalNExistNDetectionMT(
     std::string path,
     std::string inputfilename,
@@ -232,7 +232,7 @@ void PointLocalNExistNDetectionMT(
     std::cout << "Saved " << cloud_filtered->points.size() << " data points to " << outputfilename << std::endl;
 }
 
-//Ê¹ÓÃkdtreeËÑË÷·½·¨¼ì²â¾Ö²¿´æÔÚn¸ö¸ß¶È²î³¬¹ıãĞÖµµÄµã£¬¶àÏß³Ì°æ±¾£¬ÊäÈëÂË²¨
+//ä½¿ç”¨kdtreeæœç´¢æ–¹æ³•æ£€æµ‹å±€éƒ¨å­˜åœ¨nä¸ªé«˜åº¦å·®è¶…è¿‡é˜ˆå€¼çš„ç‚¹ï¼Œå¤šçº¿ç¨‹ç‰ˆæœ¬ï¼Œè¾“å…¥æ»¤æ³¢
 void PointLocalNExistNDetectionMTv1(
     std::string path,
     std::string inputfilename,
