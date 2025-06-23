@@ -133,49 +133,38 @@ Eigen library matrix multiplication took 166218 microseconds.
         
         return C
 
+## 运行结果
+
+### Windows10(Intel i7-10875H，RTX2060Laptop)上运行结果
+
 在矩阵为100时，纯python也能算出来，numpy还要快。
 
-PyTorch CUDA matrix multiplication took 376465.80 microseconds.
-
-Numpy matrix multiplication took 1994.37 microseconds.
-
-Python matrix multiplication took 888069.15 microseconds.
-
-Serial matrix multiplication took 1150 microseconds.
-
-Parallel matrix multiplication took 532 microseconds.
-
-Block matrix multiplication took 1830 microseconds.
-
-Eigen library matrix multiplication took 374 microseconds.
-
+    PyTorch CUDA matrix multiplication took 376465.80 microseconds.
+    Numpy matrix multiplication took 1994.37 microseconds.
+    Python matrix multiplication took 888069.15 microseconds.
+    Serial matrix multiplication took 1150 microseconds.
+    Parallel matrix multiplication took 532 microseconds.
+    Block matrix multiplication took 1830 microseconds.
+    Eigen library matrix multiplication took 374 microseconds.
 
 在矩阵为1000时，对比C++的四种方式
 
-PyTorch CUDA matrix multiplication took 383928.06 microseconds.
-
-Numpy matrix multiplication took 6979.70 microseconds.
-
-Serial matrix multiplication took 1821997 microseconds.
-
-Parallel matrix multiplication took 487250 microseconds.
-
-Block matrix multiplication took 361976 microseconds.
-
-Eigen library matrix multiplication took 166218 microseconds.
-
+    PyTorch CUDA matrix multiplication took 383928.06 microseconds.
+    Numpy matrix multiplication took 6979.70 microseconds.
+    Serial matrix multiplication took 1821997 microseconds.
+    Parallel matrix multiplication took 487250 microseconds.
+    Block matrix multiplication took 361976 microseconds.
+    Eigen library matrix multiplication took 166218 microseconds.
 
 在矩阵为10000时，torch就更快了
 
-PyTorch CUDA matrix multiplication took 462138.41 microseconds.
-
-Numpy matrix multiplication took 5257691.38 microseconds.
+    PyTorch CUDA matrix multiplication took 462138.41 microseconds.
+    Numpy matrix multiplication took 5257691.38 microseconds.
 
 此时C++ 也只有Eigen能够算了，但Eigen居然不如NumPy快
 
-Block matrix multiplication took 299894005 microseconds.
-
-Eigen library matrix multiplication took 38899864 microseconds.
+    Block matrix multiplication took 299894005 microseconds.
+    Eigen library matrix multiplication took 38899864 microseconds.
 
 结果：
 
@@ -194,3 +183,44 @@ Eigen library matrix multiplication took 38899864 microseconds.
 对于较小的矩阵（如100x100），某些CPU优化的方法（如多线程并行计算和平铺矩阵乘法）可以提供很好的性能。
 
 而对于较大的矩阵（如10000x10000），只有Eigen库能够在合理的时间内完成计算，尽管其性能不如Numpy或PyTorch CUDA。
+
+### MacOS(M4)上运行结果
+
+在矩阵为100时
+
+    PyTorch MPS matrix multiplication took 2094.75 microseconds.
+    Numpy matrix multiplication took 30.04 microseconds.
+    Python matrix multiplication took 202081.92 microseconds.
+    Serial matrix multiplication took 452 microseconds.
+    Parallel matrix multiplication took 2480 microseconds.
+    Block matrix multiplication took 207 microseconds.
+    Eigen library matrix multiplication took 638 microseconds.
+
+在矩阵为1000时
+
+    PyTorch MPS matrix multiplication took 2185.11 microseconds.
+    Numpy matrix multiplication took 2113.82 microseconds.
+    Serial matrix multiplication took 1107199 microseconds.
+    Parallel matrix multiplication took 286195 microseconds.
+    Block matrix multiplication took 181939 microseconds.
+    Eigen library matrix multiplication took 15011 microseconds.
+
+在矩阵为10000时
+
+    PyTorch MPS matrix multiplication took 3397.94 microseconds.
+    Numpy matrix multiplication took 1401653.05 microseconds.
+    Eigen library matrix multiplication took 9669076 microseconds.
+
+结果：
+
+|矩阵尺寸|Python|NumPy|PyTorch|C++|OMP|BLOCKOMP|Eigen|
+|-|-|-|-|-|-|-|-|
+|100|202081.92|30.04|2094.75|452|2480|207|638|
+|数量级|6|2|4|3|4|3|3|
+|1000|-	|2113.82|2185.11|1107199|286195|181939|15011|
+|数量级|-|4|4|7|6|6|5|
+|10000|-|1401653.05|3397.94|-|-|-|9669076|
+|数量级|-|7|4|-|-|-|7|
+
+对于较大的矩阵（如10000x10000），只有Eigen库能够在合理的时间内完成计算，尽管其性能不如Numpy或PyTorch MPS。
+

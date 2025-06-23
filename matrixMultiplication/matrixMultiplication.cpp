@@ -1,5 +1,12 @@
 //matrixMultiplication.cpp：矩阵乘法
-
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ \
+  -std=c++17 -fopenmp -O2 \
+  -I/opt/homebrew/include/eigen3 \
+  matrixMultiplication/matrixMultiplication.cpp -o output/matrixMultiplication \
+  $(pkg-config --cflags --libs opencv4 pcl_common pcl_io)
 #include <iostream>
 #include <vector>
 #include <omp.h>
@@ -105,11 +112,25 @@ void blockMatrixMultiply(const std::vector<std::vector<double>>& A, const std::v
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    // 检查是否提供了足够的参数
+    if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " M N P" << std::endl;
+        return 1;
+    }
+
     // 设置矩阵的大小
-    int M = 100; // 行数
-    int N = 100; // 列数
-    int P = 100; // 第二个矩阵的列数
+    // 从命令行参数读取 M, N, P
+    int M = std::atoi(argv[1]);// 行数
+    int N = std::atoi(argv[2]);// 列数
+    int P = std::atoi(argv[3]);// 第二个矩阵的列数
+
+    // 检查输入合法性
+    if (M <= 0 || N <= 0 || P <= 0) {
+        std::cerr << "Error: M, N, P must be positive integers." << std::endl;
+        return 1;
+    }
+ 
 
     // 随机生成矩阵 A 和 B
     std::vector<std::vector<double>> A(M, std::vector<double>(N, 0));
@@ -148,24 +169,24 @@ int main() {
     std::cout << "Serial matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 并行矩阵乘法
-    start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     matrixMultiplyParallelOptimized(A, B, C_parallel);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Parallel matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 块矩阵乘法
-    start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     blockMatrixMultiply(A, B, C_block, 64); // 假设每个块的大小为 64x64
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Block matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 使用 Eigen 库的矩阵乘法
-    start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     matrixMultiplyEigen(A_eigen, B_eigen, C_eigen);
-    end = std::chrono::high_resolution_clock::now();
-    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Eigen library matrix multiplication took " << duration << " microseconds." << std::endl;
 
     return 0;
