@@ -1,12 +1,16 @@
-//primeNumber.cpp ÖÊÊıÉ¸Ñ¡
-//¸ø¶¨Êı×Ön£¬Êä³ö´Ó1µ½nÖ®¼äµÄËùÓĞÖÊÊı
-
+//primeNumber.cpp è´¨æ•°ç­›é€‰
+//ç»™å®šæ•°å­—nï¼Œè¾“å‡ºä»1åˆ°nä¹‹é—´çš„æ‰€æœ‰è´¨æ•°
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ -o output/primeNumber primeNumber/primeNumber.cpp -O2 -fopenmp -std=c++17
+// run ./output/primeNumber 1000000 1 
 #include <iostream>
 #include <vector>
 #include <chrono>
 #include <omp.h>
-
-// ¶¨ÒåÉ¸Ñ¡ÖÊÊıµÄº¯Êı
+#include <cstdlib>
+// å®šä¹‰ç­›é€‰è´¨æ•°çš„å‡½æ•°
 void naive_prime_sieve(long int n, std::vector<long int>& PrimeNumber);
 void optimized_naive_prime_sieve(long int n, std::vector<long int>& PrimeNumber);
 void omp_prime_sieve(long int n, std::vector<long int>& PrimeNumber);
@@ -103,41 +107,60 @@ void linear_sieve(long int n, std::vector<long int>& PrimeNumber) {
 
 
 
-int main() {
-    long int n = 100000;  // 1µ½nÖ®¼äµÄÖÊÊı
+int main(int argc, char* argv[]) {
+    if (argc < 2 || argc > 3) {
+        std::cerr << "Usage: prime_program 100000 [compare_naive:0/1]" << std::endl;
+        return 1;
+    }
+
+    long int n = std::atol(argv[1]);  // å°†å­—ç¬¦ä¸²è½¬æ¢ä¸º long int
+
+    if (n < 2) {
+        std::cout << "No primes lower than 2." << std::endl;
+        return 0;
+    }
+
+    // åˆ¤æ–­æ˜¯å¦æ¯”è¾ƒ Naive æ–¹æ³•ï¼Œé»˜è®¤ä¸æ¯”è¾ƒï¼ˆ0ï¼‰
+    bool compare_naive = (argc == 3 && std::atoi(argv[2]) == 1);
+    std::cout << "Search Primes in [ 2 , " << n << " ]"<<std::endl;
+
     std::vector<long int> PrimeNumber1;
     std::vector<long int> PrimeNumber2;
     std::vector<long int> PrimeNumber3;
     std::vector<long int> PrimeNumber4;
     std::vector<long int> PrimeNumber5;
 
-        // ±È½ÏÎåÖÖ·½·¨µÄ½á¹ûºÍÔËĞĞÊ±¼ä
+    // æ¯”è¾ƒäº”ç§æ–¹æ³•çš„ç»“æœå’Œè¿è¡Œæ—¶é—´
+    // Naive Prime Sieve (å¯é€‰)
+    if (compare_naive) {
         auto start1 = std::chrono::steady_clock::now();
         naive_prime_sieve(n, PrimeNumber1);
         auto end1 = std::chrono::steady_clock::now();
         std::cout << "Naive Prime Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count() << "ms" << std::endl;
+    } else {
+        std::cout << "Naive Prime Sieve: Skipped" << std::endl;
+    }
+    auto start2 = std::chrono::steady_clock::now();
+    optimized_naive_prime_sieve(n, PrimeNumber2);
+    auto end2 = std::chrono::steady_clock::now();
+    std::cout << "Optimized Naive Prime Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count() << "ms" << std::endl;
 
-        auto start2 = std::chrono::steady_clock::now();
-        optimized_naive_prime_sieve(n, PrimeNumber2);
-        auto end2 = std::chrono::steady_clock::now();
-        std::cout << "Optimized Naive Prime Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count() << "ms" << std::endl;
+    auto start3 = std::chrono::steady_clock::now();
+    omp_prime_sieve(n, PrimeNumber3);
+    auto end3 = std::chrono::steady_clock::now();
+    std::cout << "OpenMP Prime Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end3 - start3).count() << "ms" << std::endl;
 
-        auto start3 = std::chrono::steady_clock::now();
-        omp_prime_sieve(n, PrimeNumber3);
-        auto end3 = std::chrono::steady_clock::now();
-        std::cout << "OpenMP Prime Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end3 - start3).count() << "ms" << std::endl;
+    auto start4 = std::chrono::steady_clock::now();
+    eratosthenes_sieve(n, PrimeNumber4);
+    auto end4 = std::chrono::steady_clock::now();
+    std::cout << "Eratosthenes Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end4 - start4).count() << "ms" << std::endl;
 
-        auto start4 = std::chrono::steady_clock::now();
-        eratosthenes_sieve(n, PrimeNumber4);
-        auto end4 = std::chrono::steady_clock::now();
-        std::cout << "Eratosthenes Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end4 - start4).count() << "ms" << std::endl;
+    auto start5 = std::chrono::steady_clock::now();
+    linear_sieve(n, PrimeNumber5);
+    auto end5 = std::chrono::steady_clock::now();
+    std::cout << "Linear Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end5 - start5).count() << "ms" << std::endl;
 
-        auto start5 = std::chrono::steady_clock::now();
-        linear_sieve(n, PrimeNumber5);
-        auto end5 = std::chrono::steady_clock::now();
-        std::cout << "Linear Sieve: " << std::chrono::duration_cast<std::chrono::milliseconds>(end5 - start5).count() << "ms" << std::endl;
-
-        //Êä³öÇ°m¸öÖÊÊı
+    //è¾“å‡ºå‰mä¸ªè´¨æ•°
     long int m = 100;
     std::cout << "Prime Sieve: ";
     for (long int i = 0; i < m; ++i) {
