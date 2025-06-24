@@ -1,4 +1,8 @@
 //polynomialMultiplication.cpp : 多项式乘法
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ -o output/polynomialMultiplication polynomialMultiplication/polynomialMultiplication.cpp -O2 -fopenmp -std=c++17
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif

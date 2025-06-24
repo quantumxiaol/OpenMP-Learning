@@ -10,6 +10,8 @@
 
 现在计算两个多项式的乘积。
 
+## C++算法实现
+
 朴素多项式乘法是最简单的方法，它直接通过双重循环逐项相乘并累加结果。C[ i ]=Ak*Bi-k（k从0到i）。
 
     void naivePolynomialMultiplication(const std::vector<double>& A, const std::vector<double>& B, std::vector<double>& MUL) {
@@ -110,32 +112,33 @@
 
 将多项式的FFT和IFFT过程中的循环分配给多个线程，可以进一步优化效率。
 
+    Windows10(i7-10875H,RTX2060Laptop)
+    -75.2478+-29.2987x+-24.2463x^2+98.3284x^3+52.6919x^4+-53.4377x^5+-86.8263x^6+-78.9493x^7+73.1755x^8+-38.8597x^9
+    47.2873+-29.9648x+96.7859x^2+-21.7494x^3+18.0662x^4+-67.914x^5+-46.3064x^6+-49.4897x^7+-17.9707x^8+88.9099x^9
+    Comparing algorithms:
+    Naive Polynomial Multiplication took 90325 microseconds.
+    -3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
+    OpenMP Naive Polynomial Multiplication took 24464 microseconds.
+    -3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
+    FFT Optimized Polynomial Multiplication took 3617 microseconds.
+    -3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
+    OpenMP and FFT Optimized Polynomial Multiplication took 3302 microseconds.
+    -3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
 
--75.2478+-29.2987x+-24.2463x^2+98.3284x^3+52.6919x^4+-53.4377x^5+-86.8263x^6+-78.9493x^7+73.1755x^8+-38.8597x^9
+    MacOS(M4)
+    Comparing algorithms:
+    Naive Polynomial Multiplication took 38129 microseconds.
+    -5013.02+5801.25x+1609.64x^2+-14267.5x^3+15102.5x^4+-3233.95x^5+-7138.75x^6+-793.599x^7+13589.7x^8+-6311.38x^9
+    OpenMP Naive Polynomial Multiplication took 15397 microseconds.
+    -5013.02+5801.25x+1609.64x^2+-14267.5x^3+15102.5x^4+-3233.95x^5+-7138.75x^6+-793.599x^7+13589.7x^8+-6311.38x^9
+    FFT Optimized Polynomial Multiplication took 2286 microseconds.
+    -5013.02+5801.25x+1609.64x^2+-14267.5x^3+15102.5x^4+-3233.95x^5+-7138.75x^6+-793.599x^7+13589.7x^8+-6311.38x^9
+    OpenMP and FFT Optimized Polynomial Multiplication took 2416 microseconds.
+    -5013.02+5801.25x+1609.64x^2+-14267.5x^3+15102.5x^4+-3233.95x^5+-7138.75x^6+-793.599x^7+13589.7x^8+-6311.38x^9
 
-47.2873+-29.9648x+96.7859x^2+-21.7494x^3+18.0662x^4+-67.914x^5+-46.3064x^6+-49.4897x^7+-17.9707x^8+88.9099x^9
+可见在windows上朴素多项式算法耗时90325ms，使用OMP并行化后耗时24464ms，而仅使用FFT优化后耗时即可缩短至3617ms，进一步使用OMP并行化也可优化至3302ms，但效果不明显，因为优化的都是单层循环。在MacOS上，结论相同。
 
-Comparing algorithms:
-
-Naive Polynomial Multiplication took 90325 microseconds.
-
--3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
-
-OpenMP Naive Polynomial Multiplication took 24464 microseconds.
-
--3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
-
-FFT Optimized Polynomial Multiplication took 3617 microseconds.
-
--3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
-
-OpenMP and FFT Optimized Polynomial Multiplication took 3302 microseconds.
-
--3558.27+869.331x+-7551.54x^2+4177.12x^3+-3523.65x^4+10519.4x^5+5492.93x^6+1054.19x^7+-3216.28x^8+-23844x^9
-
-可见朴素多项式算法耗时90325ms，使用OMP并行化后耗时24464ms，而仅使用FFT优化后耗时即可缩短至3617ms，进一步使用OMP并行化也可优化至3302ms，但效果不明显，因为优化的都是单层循环。
-
-
+## Python算法实现
 
 使用Python来对比，PyTorch和NumPy都有FFT。
 
@@ -183,19 +186,14 @@ OpenMP and FFT Optimized Polynomial Multiplication took 3302 microseconds.
         return C[:len(A) + len(B) - 1]
 
 
-Naive Polynomial Multiplication took 56457.79 milliseconds.
-
-Result:
-484.7532+1512.5681x-1948.8516x^2-2726.9115x^3-6721.8728x^4-2907.8580x^5-735.5199x^6+6265.3615x^7-2189.8554x^8-14600.6087x^9
-
-FFT Optimized Polynomial Multiplication took 1.99 milliseconds.
-
-Result:
-484.7532+1512.5681x-1948.8516x^2-2726.9115x^3-6721.8728x^4-2907.8580x^5-735.5199x^6+6265.3615x^7-2189.8554x^8-14600.6087x^9
-
-FFT Optimized Polynomial Multiplication with PyTorch took 12.97 milliseconds.
-
-Result:
-484.7656+1512.5312x-1948.8438x^2-2726.8828x^3-6721.9219x^4-2907.8672x^5-735.5469x^6+6265.3438x^7-2189.8125x^8-14600.6133x^9
+    Naive Polynomial Multiplication took 56457.79 milliseconds.
+    Result:
+    484.7532+1512.5681x-1948.8516x^2-2726.9115x^3-6721.8728x^4-2907.8580x^5-735.5199x^6+6265.3615x^7-2189.8554x^8-14600.6087x^9
+    FFT Optimized Polynomial Multiplication took 1.99 milliseconds.
+    Result:
+    484.7532+1512.5681x-1948.8516x^2-2726.9115x^3-6721.8728x^4-2907.8580x^5-735.5199x^6+6265.3615x^7-2189.8554x^8-14600.6087x^9
+    FFT Optimized Polynomial Multiplication with PyTorch took 12.97 milliseconds.
+    Result:
+    484.7656+1512.5312x-1948.8438x^2-2726.8828x^3-6721.9219x^4-2907.8672x^5-735.5469x^6+6265.3438x^7-2189.8125x^8-14600.6133x^9
 
 可见并行化不完全是灵丹妙药，有时需要其他优化方法。
