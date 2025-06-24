@@ -1,5 +1,7 @@
 # 字符画
-# ASCIIArt
+ASCIIArt
+
+## 原理
 
 用不同的字符代表不同灰度的像素
   
@@ -80,8 +82,24 @@
     cap.release();
     writer.release();
 
-效果
+## 效果
 
-![BF](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt1.jpg)
+![BF](../png/ASCIIArt1.jpg)
 
-![AF](https://github.com/quantumxiaol/OpenMP-Learning/blob/main/png/ASCIIArt2.jpg)
+![AF](../png/ASCIIArt2.jpg)
+
+## 运行结果
+
+    ./output/ASCIIArt in.mp4 out.avi
+    Using input path: ./TestData/in.mp4
+    Using output path: ./TestData/out.avi
+    Input video path: ./TestData/in.mp4
+    Output video path: ./TestData/out.avi
+    Input video properties:
+    FPS: 60
+    Frame Width: 2680
+    Frame Height: 3840
+    Output video dimensions: 2680x3840
+    Time taken: 91165ms
+
+处理一段25s，接近4K@60Hz，码率40000kbps的视频约1min30s。

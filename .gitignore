@@ -7,3 +7,5 @@ build/
 CMakeLists.txt
 
 *.pcd
+*.mp4
+*.avi

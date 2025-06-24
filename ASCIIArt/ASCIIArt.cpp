@@ -1,13 +1,41 @@
 //ASCIIArt.cpp
-
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ \
+  -std=c++17 -fopenmp -O2 \
+  ASCIIArt/ASCIIArt.cpp -o output/ASCIIArt \
+  $(pkg-config --cflags --libs opencv4 pcl_common pcl_io pcl_kdtree pcl_search)
+// run with ./output/ASCIIArt 8 16 in.mp4 out.avi
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <omp.h>
 #include <string>
 #include <chrono>
+#include <filesystem> 
+#include <cstdlib>     // for std::exit
+#include <stdexcept>   // for std::invalid_argument, std::out_of_range
+
 // 定义字符集，用于表示不同的灰度级别
 const char* ascii_chars = " .,-~:;=!*#$@";
 
+namespace fs = std::filesystem;
+
+std::string resolvePath(const std::string& path) {
+    fs::path filePath(path);
+    if (filePath.is_absolute()) {
+        return path;
+    } else {
+        // 如果是相对路径，则相对于 ./TestData/ 目录
+        fs::path testDataDir("./TestData");
+        return (testDataDir / filePath).make_preferred().string();
+    }
+}
+
+void clearScreen() {
+    std::cout << "\033[2J\033[H"; // ANSI escape sequence to clear screen and move cursor to home position
+    std::cout.flush();
+}
 // 函数：将灰度值映射到字符
 char grayToChar(int gray) {
     // 确保灰度值在0-255之间
@@ -40,7 +68,12 @@ void ReadImg(const std::string& imgPath) {
 }
 
 // 函数：读取并显示视频
-void ReadVideo(const std::string& videoPath) {
+// 使用OpenMP加速ASCII渲染
+void ReadVideoOmp(
+    const std::string& videoPath,
+    int blockWidth = 8,   // 每个字符代表的像素宽度
+    int blockHeight = 16 // 每个字符代表的像素高度
+) {
     cv::VideoCapture cap(videoPath); // 打开视频文件
     if (!cap.isOpened()) {
         std::cerr << "Error: Could not open the video file." << std::endl;
@@ -56,27 +89,66 @@ void ReadVideo(const std::string& videoPath) {
         // 转换为灰度图
         cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
 
-        // 缩放图片以适应终端窗口
-        cv::resize(grayFrame, grayFrame, cv::Size(), 0.2, 0.2, cv::INTER_AREA);
+        // 缩放图像以适配终端大小（可选）
+        // double scale = 0.4; // 可调整缩放比例
+        // cv::resize(grayFrame, grayFrame, cv::Size(), scale, scale, cv::INTER_AREA);
 
-        // 清除之前的帧
-        system("cls"); // Windows系统使用 cls 命令清屏
-        // 在Unix/Linux系统上可以使用 system("clear");
+        int rows = grayFrame.rows;
+        int cols = grayFrame.cols;
 
-        // 遍历所有像素并打印ASCII字符
-        for (int i = 0; i < grayFrame.rows; ++i) {
-            for (int j = 0; j < grayFrame.cols; ++j) {
-                uchar gray = grayFrame.at<uchar>(i, j);
-                std::cout << grayToChar(gray);
+        int numBlocksX = cols / blockWidth;
+        int numBlocksY = rows / blockHeight;
+
+        // 创建二维字符数组用于存储ASCII字符
+        char** asciiGrid = new char*[numBlocksY];
+        for (int i = 0; i < numBlocksY; ++i) {
+            asciiGrid[i] = new char[numBlocksX];
+        }
+
+        // 并行化处理每个块
+        #pragma omp parallel for collapse(2)
+        for (int y = 0; y < numBlocksY; ++y) {
+            for (int x = 0; x < numBlocksX; ++x) {
+                int startY = y * blockHeight;
+                int startX = x * blockWidth;
+
+                long sum = 0;
+                int count = 0;
+
+                for (int j = 0; j < blockHeight && (startY + j) < rows; ++j) {
+                    for (int i = 0; i < blockWidth && (startX + i) < cols; ++i) {
+                        sum += grayFrame.at<uchar>(startY + j, startX + i);
+                        ++count;
+                    }
+                }
+
+                int avgGray = static_cast<int>(sum / count);
+                asciiGrid[y][x] = grayToChar(avgGray);
+            }
+        }
+
+        // 清屏（Windows用cls，Mac/Linux用clear）
+        // system("clear");
+        clearScreen();
+
+        // 输出ASCII艺术
+        for (int y = 0; y < numBlocksY; ++y) {
+            for (int x = 0; x < numBlocksX; ++x) {
+                std::cout << asciiGrid[y][x];
             }
             std::cout << std::endl;
         }
 
-        // 控制帧率，这里设置为每秒30帧
-        cv::waitKey(33); // 33毫秒大约是30帧/秒
+        // 释放内存
+        for (int i = 0; i < numBlocksY; ++i) {
+            delete[] asciiGrid[i];
+        }
+        delete[] asciiGrid;
+
+        // 控制帧率（约30fps）
+        cv::waitKey(33); // 约30ms
     }
 }
-
 // 函数：将ASCII字符渲染到图像上
 cv::Mat renderAsciiArt(const cv::Mat& grayFrame, int blockWidth, int blockHeight) {
     int frameWidth = grayFrame.cols;
@@ -122,7 +194,12 @@ cv::Mat renderAsciiArt(const cv::Mat& grayFrame, int blockWidth, int blockHeight
 
 // 函数：处理视频并生成字符画视频（使用OpenMP优化）
 // 函数：处理视频并生成字符画视频
-void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
+void SaveVideoOmp(
+    const std::string& inputPath, 
+    const std::string& outputPath,
+    int blockWidth = 8,   // 每个字符代表的像素宽度
+    int blockHeight = 16 // 每个字符代表的像素高度
+) {
     cv::VideoCapture cap(inputPath); // 打开输入视频文件
     if (!cap.isOpened()) {
         std::cerr << "Error: Could not open the video file: " << inputPath << std::endl;
@@ -136,8 +213,8 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
     int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
 
     // 定义块大小
-    int blockWidth = 8;  // 块宽度
-    int blockHeight = 16; // 块高度
+    // int blockWidth = 8;  // 块宽度
+    // int blockHeight = 16; // 块高度
 
     // 计算输出视频的尺寸
     int outputWidth = (frameWidth / blockWidth) * 8;  // 每个字符用8像素宽
@@ -193,17 +270,62 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
 
 
 int main(int argc, char** argv) {
-    //std::cout << "OpenCV version: " << CV_VERSION << std::endl;
-    //std::cout << "Build information: " << cv::getBuildInformation() << std::endl;
-    std::string inpath = "2.mp4";
-    std::string outpath = "02.avi";
+    if (argc < 4 || argc > 5) {
+        std::cerr << "Usage: " << argv[0] << " <blockWidth><blockWidth><input_path> [output_path]" << std::endl;
+        return -1;
+    }
+    int blockWidth = 8;   // 每个字符代表的像素宽度
+    int blockHeight = 16; // 每个字符代表的像素高度
+        try {
+        blockWidth = std::stoi(argv[1]);
+        blockHeight = std::stoi(argv[2]);
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Error: Block size must be an integer." << std::endl;
+        return -1;
+    } catch (const std::out_of_range& e) {
+        std::cerr << "Error: Block size out of range." << std::endl;
+        return -1;
+    }
 
-    auto start = std::chrono::steady_clock::now();
-    SaveVideoOmp(inpath, outpath);
-    auto end = std::chrono::steady_clock::now();
+    // 检查 block 尺寸是否合法
+    if (blockWidth <= 0 || blockHeight <= 0) {
+        std::cerr << "Error: Block width and height must be positive integers." << std::endl;
+        return -1;
+    }
+    std::string inpath = resolvePath(argv[3]);
+    std::string outpath;
 
-    std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    // 确保输入路径存在
+    if (!fs::exists(inpath)) {
+        std::cerr << "Input file does not exist: " << inpath << std::endl;
+        return -1;
+    }
 
+    if (argc == 5) {
+        outpath = resolvePath(argv[4]);
+
+        // 输出路径处理，确保输出目录存在
+        fs::path outputPath(outpath);
+        fs::create_directories(outputPath.parent_path());
+
+        std::cout << "Using input path: " << inpath << std::endl;
+        std::cout << "Using output path: " << outpath << std::endl;
+
+        auto start = std::chrono::steady_clock::now();
+        SaveVideoOmp(inpath, outpath,blockWidth,blockHeight);
+        auto end = std::chrono::steady_clock::now();
+
+        std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
+    } else {
+        std::cout << "Using input path: " << inpath << std::endl;
+        std::cout << "No output path specified. Playing video in terminal." << std::endl;
+
+        auto start = std::chrono::steady_clock::now();
+        ReadVideoOmp(inpath,blockWidth,blockHeight);
+        auto end = std::chrono::steady_clock::now();
+
+        std::cout << "Time taken: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << " ms" << std::endl;
+    }
 
     return 0;
 }
