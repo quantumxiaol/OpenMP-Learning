@@ -130,9 +130,10 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
     }
 
     // 获取视频属性
-    double fps = cap.get(CV_CAP_PROP_FPS);
-    int frameWidth = static_cast<int>(cap.get(CV_CAP_PROP_FRAME_WIDTH));
-    int frameHeight = static_cast<int>(cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+    // opencv 2 CV_CAP_PROP_FPS-> opencv4 cv::CAP_PROP_FPS
+    double fps = cap.get(cv::CAP_PROP_FPS);
+    int frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+    int frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
 
     // 定义块大小
     int blockWidth = 8;  // 块宽度
@@ -175,7 +176,8 @@ void SaveVideoOmp(const std::string& inputPath, const std::string& outputPath) {
         if (frame.empty()) break; // 如果没有获取到帧，则退出循环
 
         // 转换为灰度图
-        cv::cvtColor(frame, grayFrame, CV_BGR2GRAY);
+        cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
+        // opencv 2 CV_BGR2GRAY->cv::COLOR_BGR2GRAY
 
         // 渲染ASCII艺术到图像
         asciiFrame = renderAsciiArt(grayFrame, blockWidth, blockHeight);
