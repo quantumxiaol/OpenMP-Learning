@@ -1,3 +1,17 @@
+// rip.cpp 
+//
+//
+// MacOS
+// /opt/homebrew/opt/llvm/bin/clang++ \
+  -std=c++17 -fopenmp \
+  -O2 \
+  -I/opt/homebrew/include \
+  rippleDetect/rip.cpp -o output/rippleDetect \
+  $(pkg-config --cflags --libs opencv4 pcl_common pcl_io pcl_kdtree pcl_search) \
+  -lpcl_filters \
+  -Wl,-rpath,/opt/homebrew/opt/llvm/lib
+// run ./output/rippleDetect ./TestData/ ripple.pcd result-ripple.pcd
+
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <pcl/io/pcd_io.h>
@@ -12,16 +26,25 @@
 #include <chrono>
 #include <omp.h>
 #include <thread>
+#include <filesystem>
+
+bool fileExists(const std::string& filename) {
+    return std::filesystem::exists(filename);
+}
+
 typedef pcl::PointXYZ PointT;
-int cloudRipGen()
+int cloudRipGen(
+    int width = 3000, // 平面宽度
+    int height = 3000, // 平面高度
+    float step = 1.0f, // 点之间的步长
+    int num_ripples = 250, // 涟漪数量
+    float max_ripple_radius = 25.0f, // 最大涟漪影响半径
+    float max_ripple_strength = 13.0f, // 最大涟漪强度
+    std::string path = "./testData/ripple.pcd"   
+)
 {
     // 设置点云参数
-    int width = 3000; // 平面宽度
-    int height = 3000; // 平面高度
-    float step = 1.0f; // 点之间的步长
-    int num_ripples = 250; // 涟漪数量
-    float max_ripple_radius = 25.0f; // 最大涟漪影响半径
-    float max_ripple_strength = 13.0f; // 最大涟漪强度
+
 
     // 创建点云
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
@@ -71,7 +94,7 @@ int cloudRipGen()
     }
 
     // 输出点云
-    pcl::io::savePCDFileASCII("C:\\work\\OpenMPLearning\\ripple.pcd", *cloud);
+    pcl::io::savePCDFileASCII(path.c_str(), *cloud);
 
     return 0;
 }
@@ -331,10 +354,32 @@ void PointLocalNExistNDetectionMTv1(
     std::cout << "Saved " << cloud_filtered->points.size() << " data points to " << outputfilename << std::endl;
 }
 
-int main(){
-    std::string path = "C:\\work\\OpenMPLearning\\";
-    std::string inputfilename = "ripple.pcd";
-    std::string outputfilename = "result-ripple.pcd";
+int main(int argc, char* argv[]) {
+    std::string path;            // 路径
+    std::string inputfilename;   // 输入文件名
+    std::string outputfilename;  // 输出文件名
+
+    // 如果提供了足够的参数，则使用它们
+    if (argc >= 4) {
+        path = argv[1];
+        inputfilename = argv[2];
+        outputfilename = argv[3];
+    }
+    // 参数不足时的提示和默认值
+    else {
+        std::cerr << "Usage: " << argv[0] << " <path> <inputfilename> <outputfilename>" << std::endl;
+        std::cerr << "Using default values:" << std::endl;
+        path = "./TestData/";
+        inputfilename = "ripple.pcd";
+        outputfilename = "result-ripple.pcd";
+        std::cerr << "Path: " << path << ", Input: " << inputfilename << ", Output: " << outputfilename << std::endl;
+    }
+
+    // if there is no ripple.pcd in path+inputfilename, generate one
+    if (!fileExists(path + inputfilename)) {
+        std::cout << "Generating ripple.pcd..." << std::endl;
+        cloudRipGen();
+    }
 
     std::chrono::duration<double> elapsed;
     auto end1 = std::chrono::high_resolution_clock::now();

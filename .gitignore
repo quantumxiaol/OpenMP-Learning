@@ -1,6 +1,9 @@
 .vscode/
+.DS_Store
 __pycache__/
 .venv/
 output/
 build/
 CMakeLists.txt
+
+*.pcd
