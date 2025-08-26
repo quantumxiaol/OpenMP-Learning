@@ -5,8 +5,7 @@
 // /opt/homebrew/opt/llvm/bin/clang++ \
   -std=c++17 -fopenmp -O2 \
   -I/opt/homebrew/include/eigen3 \
-  matrixMultiplication/matrixMultiplication.cpp -o output/matrixMultiplication \
-  $(pkg-config --cflags --libs opencv4 pcl_common pcl_io)
+  matrixMultiplication/matrixMultiplication.cpp -o output/matrixMultiplication
 #include <iostream>
 #include <vector>
 #include <omp.h>
@@ -169,24 +168,24 @@ int main(int argc, char* argv[]) {
     std::cout << "Serial matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 并行矩阵乘法
-    auto start = std::chrono::high_resolution_clock::now();
+    start = std::chrono::high_resolution_clock::now();
     matrixMultiplyParallelOptimized(A, B, C_parallel);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Parallel matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 块矩阵乘法
-    auto start = std::chrono::high_resolution_clock::now();
+    start = std::chrono::high_resolution_clock::now();
     blockMatrixMultiply(A, B, C_block, 64); // 假设每个块的大小为 64x64
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Block matrix multiplication took " << duration << " microseconds." << std::endl;
 
     // 使用 Eigen 库的矩阵乘法
-    auto start = std::chrono::high_resolution_clock::now();
+    start = std::chrono::high_resolution_clock::now();
     matrixMultiplyEigen(A_eigen, B_eigen, C_eigen);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    end = std::chrono::high_resolution_clock::now();
+    duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     std::cout << "Eigen library matrix multiplication took " << duration << " microseconds." << std::endl;
 
     return 0;
